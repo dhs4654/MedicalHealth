@@ -1,0 +1,45 @@
+{
+    "tabBar": {
+      "scrollEnabled": false,
+      "background": "#fff",
+      "shadow": "#f1f1f1",
+      "color": "#aaa",
+      "selectedColor": "#436EEE",
+      "preload": 0,
+      "frames": [{
+        "name": "page1",
+        "url": "pages/scan/scan.stml",
+        "title": "扫码"
+      }, {
+        "name": "page2",
+        "url": "pages/search/search.stml",
+        "title": "搜索"
+      }, {
+        "name": "page3",
+        "url": "pages/medical_store/medical_store.stml",
+        "title": "药库"
+      }, {
+        "name": "page4",
+        "url": "pages/mine/mine.stml",
+        "title": "我的"
+      }],
+      "list": [{
+        "text": "扫码",
+        "iconPath": "image/scan.png",
+        "selectedIconPath": "image/scan_select.png"
+      }, {
+        "text": "搜索",
+        "iconPath": "image/search.png",
+        "selectedIconPath": "image/search_select.png"
+      }, {
+        "text": "药库",
+        "iconPath": "image/medical_store.png",
+        "selectedIconPath": "image/medical_store_select.png"
+      }, {
+        "text": "我的",
+        "iconPath": "image/mine.png",
+        "selectedIconPath": "image/mine_select.png"
+      }]
+    }
+  }
+  
