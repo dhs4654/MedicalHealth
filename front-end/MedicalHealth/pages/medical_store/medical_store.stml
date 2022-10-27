@@ -1,0 +1,895 @@
+<template>
+	<view class="content">
+		<view class="loginMode">
+			<text class="account" @click="isCost" :class="isshowCost ? 'isit': 'isnot'">支出</text>
+			<text class="account" @click="isIncome" :class="isshowIncome ? 'isit': 'isnot'">收入</text>
+		</view>
+		<view v-if="isshowCost">
+			<view class='containere' style="height: auto">
+				<picker name="date" mode="date" :value="date" @change="bindDateChange">
+					<text class="isit">
+						选择查看日期：{{date}}
+					</text>
+				</picker>
+			</view>
+			<view class='containere' style="height: auto">
+				<picker name="type" mode="selector" :value="typenow" @change="bindTypeChange" :range="type">
+					<text class="isit">
+						选择消费类型： {{typenow}}
+					</text>
+				</picker>
+			</view>
+
+			<view class='contain1' style="height: auto">
+				<view v-for="(item,index) in dataList" :key="index">
+					<view v-if="dataList.length != 0">
+						<view class="num">{{index+1}}</view>
+						<view class="date">{{item.date}}</view>
+						<view class='bill'>
+							<block v-if="item.type>=1&&item.type<=4">
+								<image class="image" :src="img1" mode="topleft" />
+							</block>
+							<block v-if="item.type>=5&&item.type<=8">
+								<image class="image" :src="img2" mode="topleft" />
+							</block>
+							<block v-if="item.type>=9&&item.type<=14">
+								<image class="image" :src="img3" mode="topleft" />
+							</block>
+							<block v-if="item.type>=15&&item.type<=18">
+								<image class="image" :src="img4" mode="topleft" />
+							</block>
+							<block v-if="item.type>=19&&item.type<=22">
+								<image class="image" :src="img5" mode="topleft" />
+							</block>
+							<block v-if="item.type===23">
+								<image class="image" :src="img6" mode="topleft" />
+							</block>
+							<view class="information">
+								<view class="typebox" v-if="item.type==1">食品酒水-水果</view>
+								<view class="typebox" v-if="item.type==2">食品酒水-零食</view>
+								<view class="typebox" v-if="item.type==3">食品酒水-外卖</view>
+								<view class="typebox" v-if="item.type==4">食品酒水-聚餐</view>
+								<view class="typebox" v-if="item.type==5">服饰美妆-衣服裤子</view>
+								<view class="typebox" v-if="item.type==6">服饰美妆-化妆饰品</view>
+								<view class="typebox" v-if="item.type==7">服饰美妆-美容护肤</view>
+								<view class="typebox" v-if="item.type==8">服饰美妆-鞋帽包包</view>
+								<view class="typebox" v-if="item.type==9">行车交通-公交</view>
+								<view class="typebox" v-if="item.type==10">行车交通-打车</view>
+								<view class="typebox" v-if="item.type==11">行车交通-单车</view>
+								<view class="typebox" v-if="item.type==12">行车交通-火车</view>
+								<view class="typebox" v-if="item.type==13">行车交通-地铁</view>
+								<view class="typebox" v-if="item.type==14">行车交通-飞机</view>
+								<view class="typebox" v-if="item.type==15">休闲娱乐-电影</view>
+								<view class="typebox" v-if="item.type==16">休闲娱乐-旅游</view>
+								<view class="typebox" v-if="item.type==17">休闲娱乐-健身</view>
+								<view class="typebox" v-if="item.type==18">休闲娱乐-KTV</view>
+								<view class="typebox" v-if="item.type==19">恋爱基金-约会</view>
+								<view class="typebox" v-if="item.type==20">恋爱基金-红包</view>
+								<view class="typebox" v-if="item.type==21">恋爱基金-送礼</view>
+								<view class="typebox" v-if="item.type==22">恋爱基金-其他</view>
+								<view class="typebox" v-if="item.type==23">其他</view>
+								<view>{{item.cost}}￥</view>
+								<view class="remarks">备注:{{item.remarks}}</view>
+							</view>
+						</view>
+					</view>
+					<button class='button' float="right" type='default' size='mini' @tap="deleteitem"
+						:id="item._id">删除</button>
+				</view>
+				<view v-if="dataList.length === 0">
+					<view>这一天您没有在这方面的花销哦</view>
+				</view>
+			</view>
+		</view>
+		<view v-if="isshowIncome">
+			<view class='containere' style="height: auto">
+				<picker name="date" mode="date" :value="date" @change="bindDateChange">
+					<view class="picker">
+						选择查看日期：
+						{{date}}
+					</view>
+				</picker>
+			</view>
+			<view class='containere' style="height: auto">
+				<picker name="type" mode="selector" :value="incometypenow" @change="bindIncomeTypeChange" :range="incometype">
+					<view class="picker">
+						选择收入类型：
+						{{incometypenow}}
+					</view>
+				</picker>
+			</view>
+
+			<view class='contain1' style="height: auto">
+				<view v-for="(item,index) in incomeList" :key="index">
+					<view v-if="incomeList.length != 0">
+						<view class="num">{{index+1}}</view>
+						<view class="date">{{item.date}}</view>
+						<view class='bill'>
+							<block v-if="item.type==1">
+								<image class="image" :src="img1" mode="topleft" />
+							</block>
+							<block v-if="item.type==2">
+								<image class="image" :src="img7" mode="topleft" />
+							</block>
+							<block v-if="item.type==3">
+								<image class="image" :src="img8" mode="topleft" />
+							</block>
+							<block v-if="item.type==4">
+								<image class="image" :src="img9" mode="topleft" />
+							</block>
+							<block v-if="item.type==5">
+								<image class="image" :src="img10" mode="topleft" />
+							</block>
+							<view class="information">
+								<view class="typebox" v-if="item.type==1">生活费</view>
+								<view class="typebox" v-if="item.type==2">兼职</view>
+								<view class="typebox" v-if="item.type==3">红包</view>
+								<view class="typebox" v-if="item.type==4">奖学金</view>
+								<view class="typebox" v-if="item.type==5">助学贷款</view>
+								<view>{{item.cost}}￥</view>
+								<view class="remarks">备注:{{item.remarks}}</view>
+							</view>
+						</view>
+					</view>
+					<button class='button' float="right" type='default' size='mini' @tap="deleteitem"
+						:id="item._id">删除</button>
+				</view>
+				<view v-if="incomeList.length === 0">
+					<view>这一天您没有在这方面的收入哦</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	//const db = uniCloud.database();
+	//import util from '../../utils/util';
+	//const app = getApp();
+	export default {
+		data() {
+			return {
+				isshowCost: true, //默认显示支出
+				isshowIncome: false, //隐藏收入
+				name: '字',
+				img1: '../../static/restaurant.png',
+				img2: '../../static/dressup.png',
+				img3: '../../static/transport.png',
+				img4: '../../static/entertainment.png',
+				img5: '../../static/love.png',
+				img6: '../../static/other.png',
+				img7: '../../static/work.png',
+				img8: '../../static/redpack.png',
+				img9: '../../static/scholarship.png',
+				img10: '../../static/help.png',
+				type: ['所有', '食品酒水', '服装美饰', '行车交通', '休闲娱乐', '恋爱基金', '其他'],
+				incometype: ['所有', '生活费', '兼职', '红包', '奖学金', '助学贷款'],
+				typenow: '所有',
+				typenow1: 0,
+				incometypenow: '所有',
+				incometypenow1: 0,
+				dataList: [],
+				incomeList: [],
+				dayprice: '请选择日期',
+				dayincome: '请选择日期',
+				date: '2022-10-24',
+				date1: '',
+			}
+		},
+		onLoad() {
+			//获取当前时间
+			var DATE = util.formDate(new Date());
+			this.date = DATE;
+
+			this.DataDisplay();
+		},
+		methods: {
+			//是否显示支出
+			isCost() {
+				this.isshowCost = true;
+				this.isshowIncome = false;
+			},
+
+			//是否显示收入
+			isIncome() {
+				this.isshowCost = false;
+				this.isshowIncome = true;
+			},
+
+			async DataDisplay() {
+				this.dataList = []
+				this.incomeList = []
+
+				var num = this.Number
+				var that = this
+				/*await db.collection('data').count().then(res => {
+					num = res.result.total
+					this.Number = num;
+
+					const batchTimes = Math.ceil(this.Number / 20) //计算需要获取几次
+					let arraypro1 = [] // 空数组存储每一次获取到的支出记录 
+					let arraypro2 = [] // 空数组存储每一次获取到的收入记录 
+					let x = 0 //每次循环+1 当x等于batchTimes 说明已经到了最后一次获取数据的时候
+					for (let i = 0; i < batchTimes; i++) {
+						db.collection('data').where({
+							date: that.date,
+						}).skip(i * 20).get().then(res => {
+							x += 1
+							for (let j = 0; j < res.result.data.length; j++) {
+								if (res.result.data[j].datatype == '0') {
+									arraypro1.push(res.result.data[j])
+								} else {
+									arraypro2.push(res.result.data[j])
+								}
+							}
+							if (x == batchTimes) {
+								that.dataList = arraypro1
+								that.incomeList = arraypro2
+							}
+							var price = 0
+							var income = 0
+							for (var i in this.dataList) {
+								price = price + parseFloat(this.dataList[i].cost)
+							}
+							for (var i in this.incomeList) {
+								income = income + parseFloat(this.incomeList[i].cost)
+							}
+							that.dayprice = price;
+							that.dayincome = income;
+						})
+					}
+				})*/
+			},
+			async bindDateChange(e) {
+				this.dataList = []
+				this.incomeList = []
+
+				console.log('picker发送选择改变，携带值为', e.detail.value)
+
+				var num = this.Number
+				var that = this
+				/*await db.collection('data').count().then(res => {
+					num = res.result.total
+					this.Number = num;
+					this.date = e.detail.value;
+					console.log(this.date)
+
+					const batchTimes = Math.ceil(this.Number / 20) //计算需要获取几次
+					let arraypro1 = [] // 空数组存储每一次获取到的支出记录 
+					let arraypro2 = [] // 空数组存储每一次获取到的收入记录 
+					let x = 0 //每次循环+1 当x等于batchTimes 说明已经到了最后一次获取数据的时候
+					for (let i = 0; i < batchTimes; i++) {
+						db.collection('data').where({
+							date: e.detail.value,
+						}).skip(i * 20).get().then(res => {
+							x += 1
+							console.log(res)
+							for (let j = 0; j < res.result.data.length; j++) {
+								if (res.result.data[j].datatype == '0') {
+									arraypro1.push(res.result.data[j])
+								} else {
+									arraypro2.push(res.result.data[j])
+								}
+							}
+							if (x == batchTimes) {
+								that.dataList = arraypro1
+								that.incomeList = arraypro2
+							}
+							var price = 0
+							var income = 0
+							for (var i in this.dataList) {
+								price = price + parseFloat(this.dataList[i].cost)
+							}
+							for (var i in this.incomeList) {
+								income = income + parseFloat(this.incomeList[i].cost)
+							}
+							that.dayprice = price;
+							that.dayincome = income;
+						})
+					}
+				})*/
+			},
+			async bindTypeChange(e) {
+				this.dataList = []
+
+				console.log('picker发送选择改变，携带值为', e.detail.value)
+
+				var num = this.Number
+				var that = this
+				/*await db.collection('data').count().then(res => {
+					num = res.result.total
+					this.Number = num;
+					this.typenow1 = e.detail.value;
+					if (this.typenow1 == '1') {
+						this.typenow = '食品酒水'
+					} else if (this.typenow1 == '2') {
+						this.typenow = '服饰美妆'
+					} else if (this.typenow1 == '3') {
+						this.typenow = '行车交通'
+					} else if (this.typenow1 == '4') {
+						this.typenow = '休闲娱乐'
+					} else if (this.typenow1 == '5') {
+						this.typenow = '恋爱基金'
+					} else if (this.typenow1 == '6') {
+						this.typenow = '其他'
+					}
+					console.log(this.typenow)
+
+					const batchTimes = Math.ceil(this.Number / 20) //计算需要获取几次
+					let arraypro = [] // 空数组存储每一次获取到的支出记录
+					let x = 0 //每次循环+1 当x等于batchTimes 说明已经到了最后一次获取数据的时候
+					for (let i = 0; i < batchTimes; i++) {
+						if (this.typenow1 == '0') {
+							db.collection('data').where('type>=1 && type<=23 && datatype==0')
+								.skip(i * 20).get().then(res => {
+									x += 1
+									console.log(res)
+									for (let j = 0; j < res.result.data.length; j++) {
+										if (res.result.data[j].date == this.date) {
+											arraypro.push(res.result.data[j])
+										}
+									}
+									if (x == batchTimes) {
+										that.dataList = arraypro
+									}
+									var price = 0
+									for (var i in this.dataList) {
+										price = price + parseFloat(this.dataList[i].cost)
+									}
+									that.dayprice = price;
+								})
+						} else if (this.typenow1 == '1') {
+							db.collection('data').where('type>=1 && type<=4 && datatype==0').skip(i * 20)
+								.get().then(res => {
+									x += 1
+									console.log(res)
+									for (let j = 0; j < res.result.data.length; j++) {
+										if (res.result.data[j].date == this.date) {
+											arraypro.push(res.result.data[j])
+										}
+									}
+									if (x == batchTimes) {
+										that.dataList = arraypro
+										console.log(that.dataList)
+									}
+									var price = 0
+									for (var i in this.dataList) {
+										price = price + parseFloat(this.dataList[i]
+											.cost)
+									}
+									that.dayprice = price;
+								})
+						} else if (this.typenow1 == '2') {
+							db.collection('data').where('type>=5 && type<=8&& datatype==0').skip(
+								i * 20).get().then(res => {
+								x += 1
+								console.log(res)
+								for (let j = 0; j < res.result.data.length; j++) {
+									if (res.result.data[j].date == this.date) {
+										arraypro.push(res.result.data[j])
+									}
+								}
+								if (x == batchTimes) {
+									that.dataList = arraypro
+									console.log(that.dataList)
+								}
+								var price = 0
+								for (var i in this.dataList) {
+									price = price + parseFloat(this.dataList[i]
+										.cost)
+								}
+								that.dayprice = price;
+								console.log(price)
+							})
+						} else if (this.typenow1 == '3') {
+							db.collection('data').where('type>=9 && type<=14 && datatype==0')
+								.skip(
+									i * 20).get().then(res => {
+									x += 1
+									console.log(res)
+									for (let j = 0; j < res.result.data.length; j++) {
+										if (res.result.data[j].date == this.date) {
+											arraypro.push(res.result.data[j])
+										}
+									}
+									if (x == batchTimes) {
+										that.dataList = arraypro
+										console.log(that.dataList)
+									}
+									var price = 0
+									for (var i in this.dataList) {
+										price = price + parseFloat(this.dataList[i]
+											.cost)
+									}
+									that.dayprice = price;
+									console.log(price)
+								})
+						} else if (this.typenow1 == '4') {
+							db.collection('data').where('type>=15 && type<=18&& datatype==0').skip(
+								i * 20).get().then(res => {
+								x += 1
+								console.log(res)
+								for (let j = 0; j < res.result.data.length; j++) {
+									if (res.result.data[j].date == this.date) {
+										arraypro.push(res.result.data[j])
+									}
+								}
+								if (x == batchTimes) {
+									that.dataList = arraypro
+									console.log(that.dataList)
+								}
+								var price = 0
+								for (var i in this.dataList) {
+									price = price + parseFloat(this.dataList[i]
+										.cost)
+								}
+								that.dayprice = price;
+								console.log(price)
+							})
+						} else if (this.typenow1 == '5') {
+							db.collection('data').where('type>=19 && type<=22&& datatype==0').skip(
+								i * 20).get().then(res => {
+								x += 1
+								console.log(res)
+								for (let j = 0; j < res.result.data.length; j++) {
+									if (res.result.data[j].date == this.date) {
+										arraypro.push(res.result.data[j])
+									}
+								}
+								if (x == batchTimes) {
+									that.dataList = arraypro
+									console.log(that.dataList)
+								}
+								var price = 0
+								for (var i in this.dataList) {
+									price = price + parseFloat(this.dataList[i]
+										.cost)
+								}
+								that.dayprice = price;
+								console.log(price)
+							})
+						} else if (this.typenow1 == '6') {
+							db.collection('data').where('type==23&& datatype==0').skip(i * 20)
+								.get().then(res => {
+									x += 1
+									console.log(res)
+									for (let j = 0; j < res.result.data.length; j++) {
+										if (res.result.data[j].date == this.date) {
+											arraypro.push(res.result.data[j])
+										}
+									}
+									if (x == batchTimes) {
+										that.dataList = arraypro
+										console.log(that.dataList)
+									}
+									var price = 0
+									for (var i in this.dataList) {
+										price = price + parseFloat(this.dataList[i]
+											.cost)
+									}
+									that.dayprice = price;
+									console.log(price)
+								})
+						}
+					}
+				})*/
+			},
+			async bindIncomeTypeChange(e) {
+				this.incomeList = []
+
+				console.log('picker发送选择改变，携带值为', e.detail.value)
+
+				var num = this.Number
+				var that = this
+				/*await db.collection('data').count().then(res => {
+					num = res.result.total
+					this.Number = num;
+					this.typenow2 = e.detail.value;
+					if (this.typenow2 == '1') {
+						this.incometypenow = '生活费'
+					} else if (this.typenow2 == '2') {
+						this.incometypenow = '兼职'
+					} else if (this.typenow2 == '3') {
+						this.incometypenow = '红包'
+					} else if (this.typenow2 == '4') {
+						this.incometypenow = '奖学金'
+					} else if (this.typenow2 == '5') {
+						this.incometypenow = '助学贷款'
+					}
+					console.log(this.incometypenow)
+
+					const batchTimes = Math.ceil(this.Number / 20) //计算需要获取几次
+					let arraypro = [] // 空数组存储每一次获取到的记录 
+					let x = 0 //每次循环+1 当x等于batchTimes 说明已经到了最后一次获取数据的时候
+					for (let i = 0; i < batchTimes; i++) {
+						if (this.typenow2 == '0') {
+							db.collection('data').where('type>=1 && type<=5&& datatype==1')
+								.skip(i * 20).get().then(res => {
+									x += 1
+									console.log(res)
+									for (let j = 0; j < res.result.data.length; j++) {
+										if (res.result.data[j].date == this.date) {
+											arraypro.push(res.result.data[j])
+										}
+									}
+									if (x == batchTimes) {
+										that.incomeList = arraypro
+										console.log(that.incomeList)
+									}
+									var price = 0
+									for (var i in this.incomeList) {
+										price = price + parseFloat(this.incomeList[i].cost)
+									}
+									that.dayincome = price;
+									console.log(price)
+								})
+						} else if (this.typenow2 == '1') {
+							db.collection('data').where('type==1&& datatype==1').skip(i * 20)
+								.get().then(res => {
+									x += 1
+									console.log(res)
+									for (let j = 0; j < res.result.data.length; j++) {
+										if (res.result.data[j].date == this.date) {
+											arraypro.push(res.result.data[j])
+										}
+									}
+									if (x == batchTimes) {
+										that.incomeList = arraypro
+										console.log(that.incomeList)
+									}
+									var price = 0
+									for (var i in this.incomeList) {
+										price = price + parseFloat(this.incomeList[i]
+											.cost)
+									}
+									that.dayincome = price;
+									console.log(price)
+								})
+						} else if (this.typenow2 == '2') {
+							db.collection('data').where('type==2&& datatype==1').skip(
+								i * 20).get().then(res => {
+								x += 1
+								console.log(res)
+								for (let j = 0; j < res.result.data.length; j++) {
+									if (res.result.data[j].date == this.date) {
+										arraypro.push(res.result.data[j])
+									}
+								}
+								if (x == batchTimes) {
+									that.incomeList = arraypro
+									console.log(that.incomeList)
+								}
+								var price = 0
+								console.log(this.incomeList)
+								for (var i in this.incomeList) {
+									price = price + parseFloat(this.incomeList[i]
+										.cost)
+								}
+								that.dayincome = price;
+								console.log(price)
+							})
+						} else if (this.typenow2 == '3') {
+							db.collection('data').where('type==3&& datatype==1').skip(
+								i * 20).get().then(res => {
+								x += 1
+								console.log(res)
+								for (let j = 0; j < res.result.data.length; j++) {
+									if (res.result.data[j].date == this.date) {
+										arraypro.push(res.result.data[j])
+									}
+								}
+								if (x == batchTimes) {
+									that.incomeList = arraypro
+									console.log(that.incomeList)
+								}
+								var price = 0
+								for (var i in this.incomeList) {
+									price = price + parseFloat(this.incomeList[i]
+										.cost)
+								}
+								that.dayincome = price;
+								console.log(price)
+							})
+						} else if (this.typenow2 == '4') {
+							db.collection('data').where('type==4&& datatype==1').skip(
+								i * 20).get().then(res => {
+								x += 1
+								console.log(res)
+								for (let j = 0; j < res.result.data.length; j++) {
+									if (res.result.data[j].date == this.date) {
+										arraypro.push(res.result.data[j])
+									}
+								}
+								if (x == batchTimes) {
+									that.incomeList = arraypro
+									console.log(that.incomeList)
+								}
+								var price = 0
+								for (var i in this.incomeList) {
+									price = price + parseFloat(this.incomeList[i]
+										.cost)
+								}
+								that.dayincome = price;
+								console.log(price)
+							})
+						} else if (this.typenow2 == '5') {
+							db.collection('data').where('type==5&& datatype==1').skip(
+								i * 20).get().then(res => {
+								x += 1
+								console.log(res)
+								for (let j = 0; j < res.result.data.length; j++) {
+									if (res.result.data[j].date == this.date) {
+										arraypro.push(res.result.data[j])
+									}
+								}
+								if (x == batchTimes) {
+									that.incomeList = arraypro
+									console.log(that.incomeList)
+								}
+								var price = 0
+								for (var i in this.incomeList) {
+									price = price + parseFloat(this.incomeList[i]
+										.cost)
+								}
+								that.dayincome = price;
+								console.log(price)
+							})
+						}
+					}
+				})*/
+			},
+			delete_over_display() {
+				this.dataList = []
+				this.incomeList = []
+
+				var num = this.Number
+				var that = this
+				/*db.collection('data').count().then(res => {
+					num = res.result.total;
+					this.Number = num;
+
+					const batchTimes = Math.ceil(this.Number / 20) //计算需要获取几次
+					let arraypro1 = [] // 空数组存储每一次获取到的支出记录
+					let arraypro2 = [] // 空数组存储每一次获取到的收入记录  
+					let x = 0 //每次循环+1 当x等于batchTimes 说明已经到了最后一次获取数据的时候
+					for (let i = 0; i < batchTimes; i++) {
+						db.collection('data').where({
+							date: that.date
+						}).skip(i * 20).get().then(res => {
+							x += 1
+							for (let j = 0; j < res.result.data.length; j++) {
+								if (res.result.data[j].datatype == '0') {
+									arraypro1.push(res.result.data[j])
+								} else {
+									arraypro2.push(res.result.data[j])
+								}
+							}
+							if (arraypro1)
+								if (x == batchTimes) {
+									that.dataList = arraypro1
+									console.log(that.dataList)
+								}
+							if (arraypro2)
+								if (x == batchTimes) {
+									that.incomeList = arraypro2
+									console.log(that.incomeList)
+								}
+							var price = 0
+							var income = 0
+							for (var i in this.dataList) {
+								price = price + parseFloat(this.dataList[i].cost)
+							}
+							for (var i in this.incomeList) {
+								income = income + parseFloat(this.incomeList[i].cost)
+							}
+							that.dayprice = price;
+							that.dayincome = income;
+						})
+						console.log(that.dayprice)
+						console.log(that.dayincome)
+					}
+				})*/
+			},
+
+			deleteitem(e) {
+				var _this = this
+				uni.showModal({
+					title: '提示',
+					content: '是否删除这条记录',
+					showCancel: false,
+					success(res) {
+						if (res.confirm) {
+							uniCloud.callFunction({
+								name: "delete",
+								data: {
+									id: e.currentTarget.id,
+								},
+								success(res) {
+									console.log(res);
+								},
+								fail(e) {
+									console.log(e);
+								}
+							});
+							_this.delete_over_display()
+						} else if (res.cancel) {
+							console.log('用户点击取消')
+						}
+					}
+				})
+			},
+		}
+	}
+</script>
+
+<style>
+	.content {
+		background-color: #fff9eb;
+		height:100%;
+	}
+	.loginMode {
+		width: 100%;
+		height:70rpx;
+		background-color: #ffffff;
+		display: flex;
+		white-space: nowrap;
+		flex-direction: row;
+		align-items: flex-end;
+		justify-content: space-around;
+	}
+
+	.isnot {
+		font-size: 18px;
+		font-weight: 600;
+		margin-top: 3px;
+		color: #D3D3D3;
+	}
+
+	.isit {
+		font-size: 20px;
+		font-weight: 600;
+		margin-top: 5px;
+		border-right: 1px solid #F8F8F8;
+		color: #ff7f0f
+	}
+
+	.account {
+		height: 45px;
+		line-height: 45px;
+		display: inline-block;
+	}
+
+	.contain {
+		width: 690rpx;
+		border-radius: 30rpx;
+		background-color: #ffffff;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+		font-size: 35rpx;
+		color: #f887d6;
+		margin: 30rpx auto;
+		padding: 20rpx;
+		position: relative;
+	}
+
+	.text {
+		text-align: center;
+	}
+
+	.contain1 {
+		width: 690rpx;
+		border-radius: 30rpx;
+		background-color: #e9f6f8;
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+		font-size: 35rpx;
+		color: #f887d6;
+		margin: 30rpx auto;
+		padding: 20rpx 0 20rpx 0;
+		position: relative;
+	}
+
+	.containere {
+		width: 100%;
+		background-color: #ffffff;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+		font-size: 35rpx;
+		color: #f887d6;
+		margin: 30rpx auto;
+		padding: 20rpx;
+		position: relative;
+	}
+
+	.num {
+		text-align: center;
+		color: #f887d6;
+		background: #ffffff;
+		width: 690rpx;
+		position: relative;
+	}
+
+	.date {
+		text-align: left;
+		color: #194eff;
+	}
+
+	.image {
+		width: 50%;
+		height: 50%;
+	}
+
+	.cost {
+		font-size: 20px;
+		text-align: left;
+		color: rgb(206, 35, 35);
+		padding: absolute;
+		top: 10px;
+		left: 200px;
+	}
+
+	.coste {
+		font-size: 20px;
+		text-align: right;
+	}
+
+	.bill {
+		display: flex;
+		flex-direction: row;
+		margin-left: 10px
+	}
+
+	.image {
+		width: 60px;
+		height: 60px;
+		margin: 10px;
+	}
+
+	.information {
+		width: 90px;
+		margin-top: 20px;
+		margin-left: 20px;
+		display: flex;
+		flex-direction: column;
+		color: red;
+	}
+
+	.typebox {
+		font-size: 30rpx;
+		word-break: break-all;
+		color: #ff9170;
+	}
+
+	.remarks {
+		font-size: 27rpx;
+		word-break: break-all;
+		color: #7a7878;
+	}
+
+	.btn-area {
+		margin-top: 40rpx;
+	}
+
+	.buttone {
+		align-items: right;
+
+	}
+
+	.button {
+		margin: auto 150rpx;
+		text-align: right;
+		/*float: right;*/
+		left: 60px;
+		bottom: 20px;
+	}
+
+	.row {
+		padding: 50rpx 20rpx;
+		border-bottom: 2px solid rgb(61, 180, 81);
+	}
+</style>
