@@ -1,0 +1,79 @@
+<template>
+<view class="content">
+    <view class="scanIcon">
+        <image src="R-C.png" @click="getMsg" />
+        <text class="wordMsg">扫一扫获取药物具体信息</text> 
+    </view>
+</view>
+</template>
+
+
+<script>
+// import ret from 'scan.json'
+export default { 
+    // data() {
+    //     return {
+    //         ret
+    //     }
+    // },
+    data() {
+        return{
+            motherfucker: 1,
+            drugsList: []
+        }
+    },
+
+    methods: {
+        apiready() {
+            this.getMsg();
+        },
+        
+        getMsg: function() {
+            var param = {}
+            var xwScanner = api.require('xwScanner')
+            let that = this;
+            var resultCallback = function(ret, err){
+                if(ret.eventType=='success'){
+                    if (ret.content && ret.content != '') {
+                        that.content = ret.content;
+                        api.confirm({
+                            title: '药品信息如下，是否加入药库',
+                            msg:that.content,
+                            buttons:['确认','取消'],
+                        }, function(ret2, arr2) {
+                            if(ret2.buttonIndex == 1) {
+                                that.data.drugsList.push(that.content);
+                                api.alert({msg:'成功加入药库'});
+                                // api.alert({msg:that.data.drugsList});
+                            }
+                        })
+                    }
+                }
+            };
+
+            xwScanner.openScanner(param,resultCallback)
+        },
+    }
+    
+}
+</script>
+
+<style >
+    .content {
+        background-color: whitesmoke;
+        height: 100%;
+    }
+    .scanIcon {
+        height: 35%;
+        margin-top: 68%;
+        margin-left: 14%;
+        position: absolute;
+    }
+    .wordMsg {
+        flex: 1;
+        font-size: 14px;
+        margin-left: 22%;
+        font-weight: bold;
+	    color: #333;
+    }
+</style>
