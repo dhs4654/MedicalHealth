@@ -1,0 +1,174 @@
+<template>
+	<safe-area class="view">
+		<hoc-nav-bar-sgm title="药物详细信息" isShowBack>=</hoc-nav-bar-sgm>
+		<view class="list">
+			<image class="image" :src={{item.image}} mode="center" />
+			<text class="name">药物名称：{{item.name}} </text>
+			<view class="owner">
+				<picker name="type" mode="selector" :range="type" :value="type[item.owner-1]">
+					<text class="owner1">药物所有：{{type[item.owner-1]}}</text>
+				</picker>
+				<view class="clock" :id2="item.id">
+					<button class="text" :id2="item.id" @click="setclock">设闹钟</button>
+				</view>
+			</view>
+			<text class="manufacturedate">生产日期：{{item.manufacturedate}}</text>
+			<text class="duedate">截止日期：{{item.duedate}}</text>
+			<text class="instruct">具体说明：</text>
+			<text class="detail"> {{item.desc}}</text>
+		</view>
+	</safe-area>
+</template>
+<script>
+import "../../components/feature-component/hoc-company-detail-es.stml";
+import "../../components/feature-component/hoc-nav-bar-sgm.stml";
+var idnum = '';
+var idtype = '';
+export default {
+	installed() {
+		this.getidnum();
+		this.initData();
+	},
+	data() {
+		return {
+			type: ['我的', '家人'],
+			id: '',
+			item: [],
+		}
+	},
+	methods: {
+		getidnum(e) {
+			this.id = api.pageParam.data;
+		},
+		//从数据库获取
+		initData() {
+			const request = (url, params, method) => {
+				return new Promise((resolve, reject) => {
+					api.ajax({
+						url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.id,
+						method: 'get',
+					}, function (ret, err) {
+						if (ret) {
+							resolve(ret)
+						} else {
+							reject('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+						};
+					});
+				})
+			};
+			request().then(res => {
+				if (res.data) {
+					this.item = res.data;
+				} else {
+					api.alert({
+						title: '首页请求数据提示',
+						msg: res.reject
+					});
+				}
+			})
+
+		},
+		setclock(e) {
+			api.openWin({
+				name: "setclock",
+				url: "./clock.stml",
+				reload: true,
+				bounces: true,
+				pageParam: {
+					data: this.item.id,
+				}
+			});
+		}
+	}
+}
+</script>
+<style>
+.view {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	font-size: 10px;
+}
+.list {
+	width: 100%;
+	margin-top: 10px;
+}
+.image {
+	width: 270px;
+	height: 270px;
+	margin-left: 50px;
+	object-fit: contain;
+	margin-bottom: 10px;
+}
+.name {
+	width: 100%;
+	height: 5%;
+	font-size: 20px;
+	border-style: double;
+	border-color: #f0f0f0;
+	border-width: 1px;
+	margin-bottom: 5px;
+	margin-left: 10px;
+}
+.owner {
+	display: flex;
+	width: 100%;
+	height: 5%;
+	flex-direction: row;
+	margin-left: 10px;
+	margin-bottom: 5px;
+	border-style: double;
+	border-color: #f0f0f0;
+	border-width: 1px;
+}
+.owner1 {
+	font-size: 20px;
+}
+.clock {
+	width: 80px;
+	height: 100%;
+	margin-left: 80px;
+}
+.text {
+	font-size: 11px;
+}
+.manufacturedate {
+	width: 100%;
+	height: 5%;
+	font-size: 20px;
+	border-style: double;
+	border-color: #f0f0f0;
+	border-width: 1px;
+	margin-bottom: 5px;
+	margin-left: 10px;
+	float: center;
+}
+.duedate {
+	width: 100%;
+	height: 5%;
+	font-size: 20px;
+	border-style: double;
+	border-color: #f0f0f0;
+	border-width: 1px;
+	margin-bottom: 5px;
+	margin-left: 10px;
+}
+.instruct {
+	width: 100%;
+	height: 5%;
+	font-size: 20px;
+	margin-left: 10px;
+	border-top: 1px double #f0f0f0;
+}
+.detail {
+	width: 100%;
+	font-size: 20px;
+	border-bottom: 1px double #f0f0f0;
+	margin-left: 10px;
+	height: 20%;
+}
+.owner2 {
+	margin-top: 3px;
+	font-size: 20px;
+}
+</style>

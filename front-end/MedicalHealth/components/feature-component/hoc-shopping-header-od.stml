@@ -1,0 +1,73 @@
+<template>
+	<view class="nav_box">
+		<image class="nav_img" :src='image'></image>
+		<text class="nav_appname">{title}</text>
+		<view class="flex1"></view>
+		<text class="nav_btn" onclick="onEditBtn">编辑</text>
+	</view>
+</template>
+<script>
+export default {
+	name: 'hoc-shopping-header-od',
+	props: {
+		image: {
+			type: String,
+			defalut: ''
+		},
+		title: {
+			type: String,
+			defalut: ''
+		}
+	},
+	apiready() {//like created
+
+	},
+	data() {
+		return {
+			title:this.props.title !== undefined ? this.props.title : "服饰商城",
+			image:this.props.image !== undefined ? this.props.image : "http://aea8bc2ccdd582de43c1.qiniucdn.apicloud-system.com/apicloud/e399d491160c706d4c7517ad05cd2170.png",
+		}
+	},
+	methods: {
+
+	}
+}
+</script>
+<style scoped>
+/* nav box */
+.nav_box {
+	flex-direction: row;
+	align-items: center;
+	height: 54px;
+	background-color: white;
+}
+.nav_img {
+	width: 34px;
+	height: 34px;
+	border-radius: 4px;
+	margin-left: 15px;
+	margin-right: 8px;
+	background-color: #f8f8f8;
+}
+.nav_appname {
+	font-size: 12px;
+	color: #333333;
+}
+.flex1 {
+	flex: 1;
+}
+.nav_btn {
+	width: 70px;
+	height: 30px;
+	line-height: 30px;
+	border-radius: 2px;
+	text-align: center;
+	color: #ff7037;
+	font-size: 14px;
+	margin-right: 15px;
+	border: 1px solid #ff7037;
+}
+.nav_btn:active {
+	opacity: 0.7;
+}
+</style>

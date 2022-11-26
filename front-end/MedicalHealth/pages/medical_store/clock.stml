@@ -1,0 +1,617 @@
+<template>
+	<safe-area class="view_1">
+		<hoc-nav-bar-sgm title="设置服药闹钟" isShowBack>=</hoc-nav-bar-sgm>
+		<view class="date">
+			<text class="datenumber">{{date}} {{week}}</text>
+		</view>
+		<view class="time">
+			<text class="timenumber">{{time}}</text>
+		</view>
+		<view class="clock">
+			<view class="list">
+				<view class="information">
+					<picker name="timepicker" class="picker" mode="multiSelector" :range="timeList"
+						value={timeMltiSelectorValue} onchange={this.timeMultiSelectorChange} :id3='1'>
+						<text class="time1">{{morning}}</text>
+						<text class="timeinformation">闹钟， 重复每天</text>
+					</picker>
+				</view>
+				<view class="switchbutton">
+					<switch onchange="noticealarm1" :checked="clockFlag[0]"></switch>
+				</view>
+			</view>
+			<view class="list">
+				<view class="information">
+					<picker name="timepicker" class="picker" mode="multiSelector" :range="timeList"
+						value={timeMltiSelectorValue} onchange={this.timeMultiSelectorChange} :id3='2'>
+						<text class="time1">{{noon}}</text>
+						<text class="timeinformation">闹钟， 重复每天</text>
+					</picker>
+				</view>
+				<view class="switchbutton">
+					<switch onchange="noticealarm2" :checked="clockFlag[1]"></switch>
+				</view>
+			</view>
+			<view class="list">
+				<view class="information">
+					<picker name="timepicker" class="picker" mode="multiSelector" :range="timeList"
+						value={timeMltiSelectorValue} onchange={this.timeMultiSelectorChange} :id3='3'>
+						<text class="time1">{{evening}}</text>
+						<text class="timeinformation">闹钟， 重复每天</text>
+					</picker>
+				</view>
+				<view class="switchbutton">
+					<switch onchange="noticealarm3" :checked="clockFlag[2]"></switch>
+				</view>
+			</view>
+			<view class="list">
+				<view class="information">
+					<picker name="timepicker" class="picker" mode="multiSelector" :range="timeList"
+						value={timeMltiSelectorValue} onchange={this.timeMultiSelectorChange} :id3='4'>
+						<text class="time1">{{undefine}}</text>
+						<text class="timeinformation">闹钟， 重复每天</text>
+					</picker>
+				</view>
+				<view class="switchbutton">
+					<switch onchange="noticealarm4" :checked="clockFlag[3]"></switch>
+				</view>
+			</view>
+		</view>
+	</safe-area>
+</template>
+<script>
+import "../../components/feature-component/hoc-nav-bar-sgm.stml";
+import "../../script/api.js";
+export default {
+	data() {
+		return {
+			date: '',
+			week: '',
+			time: '',
+			getid: '',
+			newtimer: '',
+			clocktime: "",
+			clockFlag: [false, false, false, false],
+			morning: "",
+			noon: "",
+			evening: "",
+			undefine: "",
+			hour1: [],
+			minute1: [],
+			timeList: [],
+			timeMltiSelectorValue: [0, 0],
+			selecthour: new Date().getHours(),
+			selectminute: new Date().getMinutes(),
+		}
+	},
+	mounted() {
+		this.gettime(); //执行日期函数
+		this.setHours();
+		this.getidfromdetail();
+		this.initData();
+		var permission = 'notification';
+		var resultList = api.hasPermission({
+			list: [permission]
+		});
+		if (resultList[0].granted == 0) {
+			api.confirm({
+				msg: '应用需要您的授权才能通知您消息',
+				buttons: ['取消', '去设置']
+			}, function (ret) {
+				if (ret.buttonIndex == 2) {
+					api.requestPermission({
+						list: [permission],
+					}, function (res) {
+						if (res.list[0].granted) {
+							// 已授权，可以继续下一步操作
+							api.alert({
+								msg: '现已授权',
+							});
+						}
+					});
+				}
+			});
+		};
+		clearInterval(this.newTimer); //清除定时器
+		// 定时获取时间
+		this.newTimer = setInterval(this.gettime, 1000);
+	},
+	beforeRouteLeave(to, from, next) {
+		// 离开组件时停掉定时器，节省内存
+		clearInterval(this.newTimer);
+		next();
+	},
+	methods: {
+		gettime() {
+			var d = new Date()
+			const year = d.getFullYear();
+			const month = d.getMonth() + 1;
+			const day = d.getDate();
+			const hour = d.getHours();
+			const minute = d.getMinutes();
+			const second = d.getSeconds();
+			this.date = [year, month, day].map(this.formatNumber).join('/');
+			this.time = [hour, minute, second].map(this.formatNumber).join(':');
+			let Week = d.getDay();
+			let weeks = ["日", "一", "二", "三", "四", "五", "六"];
+			this.week = "星期" + weeks[Week];
+		},
+		getidfromdetail() {
+			this.getid = api.pageParam.data;
+		},
+		setHours() {
+			this.hour1 = [];
+			for (let index = 0; index < 24; index++) {
+				this.data.hour1.push(index > 9 ? index : '0' + index);
+			}
+			this.setMinutes();
+		},
+		setMinutes() {
+			for (let index = 0; index < 60; index++) {
+				this.data.minute1.push(index > 9 ? index : '0' + index);
+			}
+
+		},
+		//从数据库获取
+		initData() {
+			this.data.timeList = [this.data.hour1, this.data.minute1];
+			const request = (url, params, method) => {
+				return new Promise((resolve, reject) => {
+					api.ajax({
+						url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.getid,
+						method: 'get',
+					}, function (ret, err) {
+						if (ret) {
+							resolve(ret)
+						} else {
+							reject('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+						};
+					});
+				})
+			};
+			request().then(res => {
+				if (res.data) {
+					this.clocktime = res.data.clockTime;
+					this.morning = this.clocktime.substring(4, 6) + '  :  ' + this.clocktime.substring(6, 8);
+					this.noon = this.clocktime.substring(8, 10) + '  :  ' + this.clocktime.substring(10, 12);
+					this.evening = this.clocktime.substring(12, 14) + '  :  ' + this.clocktime.substring(14, 16);
+					this.undefine = this.clocktime.substring(0, 2) + '  :  ' + this.clocktime.substring(2, 4);
+					for (let i = 0; i < 4; i++) {
+						if (res.data.clockFlags[i] == 0) {
+							this.clockFlag[i] = false;
+						}
+						else {
+							this.clockFlag[i] = true;
+						}
+					}
+				} else {
+					api.alert({
+						title: '首页请求数据提示',
+						msg: res.reject
+					});
+				}
+			})
+		},
+		//格式化日期展示
+		formatNumber(n) {
+			n = n.toString(); //根据年月获取天数
+			return n[1] ? n : '0' + n;
+		},
+		//修改数据库中clocktime值
+		timeMultiSelectorChange(e) {
+			this.timeMltiSelectorValue = [e.detail.value[0], e.detail.value[1]];
+			var hour = this.data.hour1[e.detail.value[0]];
+			var minute = this.data.minute1[e.detail.value[1]];
+			if (e.currentTarget.getAttribute('id3') == '1') {
+				this.data.morning = hour + '  :  ' + minute;
+			} else if (e.currentTarget.getAttribute('id3') == '2') {
+				this.data.noon = hour + '  :  ' + minute;
+			} else if (e.currentTarget.getAttribute('id3') == '3') {
+				this.data.evening = hour + '  :  ' + minute;
+			} else {
+				this.data.undefine = hour + '  :  ' + minute;
+			}
+			var time = '';
+			time += this.undefine.substring(0, 2) + this.undefine.substring(7, 9);
+			time += this.morning.substring(0, 2) + this.morning.substring(7, 9);
+			time += this.noon.substring(0, 2) + this.noon.substring(7, 9);
+			time += this.evening.substring(0, 2) + this.evening.substring(7, 9);
+			this.clocktime = time;
+			api.ajax({
+				url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.getid,
+				method: 'put',
+				headers: {
+					"Content-Type": "application/json;charset=utf-8",
+				},
+				data: {
+					body: {
+						clockTime: this.clocktime
+					}
+				}
+			}, function (ret, err) {
+				if (ret) {
+					api.alert({ msg: '闹钟时间修改成功！' });
+				} else {
+					api.alert({ msg: JSON.stringify(err) });
+				};
+			});
+		},
+		noticealarm1(e) {
+			var hour=this.morning[0]==0?this.morning[1]-0:this.morning.substring(0,2)-0;
+			var minute=this.morning[7]==0?this.morning[8]-0:this.morning.substring(7,9)-0;
+			if (e.currentTarget.checked) {
+				this.clockFlag[0] = true;
+				var clockFlags = '';
+				for (let i = 0; i < 4; i++) {
+					if (this.clockFlag[i] == true) {
+						clockFlags += '1';
+					}
+					else {
+						clockFlags += '0';
+					}
+				}
+				api.ajax({
+					url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.getid,
+					method: 'put',
+					headers: {
+						"Content-Type": "application/json;charset=utf-8",
+					},
+					data: {
+						body: {
+							weekFrequency: '1111111',
+							clockFlags: clockFlags,
+						}
+					}
+				}, function (ret, err) {
+					if (err) {
+						api.alert({ msg: JSON.stringify(err) });
+					};
+				});
+				api.notification({
+					notify: {
+						content: '闹钟'
+					},
+					alarm: {
+						hour: hour,
+						minutes: minute,
+						daysOfWeek: [1, 2, 3, 4, 5, 6, 7]
+					}
+				}, function (ret, err) {
+					id1 = ret.id;
+				});
+			}
+			else {
+				api.cancelNotification({
+					id: id1
+				});
+				this.clockFlag[0] = false;
+				var clockFlags = '';
+				for (let i = 0; i < 4; i++) {
+					if (this.clockFlag[i] == true) {
+						clockFlags += '1';
+					}
+					else {
+						clockFlags += '0';
+					}
+				}
+				api.ajax({
+					url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.getid,
+					method: 'put',
+					headers: {
+						"Content-Type": "application/json;charset=utf-8",
+					},
+					data: {
+						body: {
+							clockFlags: clockFlags,
+						}
+					}
+				}, function (ret, err) {
+					if (err) {
+						api.alert({ msg: JSON.stringify(err) });
+					};
+				});
+			}
+		},
+		noticealarm2(e) {
+			var hour=this.noon[0]==0?this.noon[1]-0:this.noon.substring(0,2)-0;
+			var minute=this.noon[7]==0?this.noon[8]-0:this.noon.substring(7,9)-0;
+			if (e.currentTarget.checked) {
+				this.clockFlag[1] = true;
+				var clockFlags = '';
+				for (let i = 0; i < 4; i++) {
+					if (this.clockFlag[i] == true) {
+						clockFlags += '1';
+					}
+					else {
+						clockFlags += '0';
+					}
+				}
+				api.ajax({
+					url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.getid,
+					method: 'put',
+					headers: {
+						"Content-Type": "application/json;charset=utf-8",
+					},
+					data: {
+						body: {
+							weekFrequency: '1111111',
+							clockFlags: clockFlags,
+						}
+					}
+				}, function (ret, err) {
+					if (err) {
+						api.alert({ msg: JSON.stringify(err) });
+					};
+				});
+				api.notification({
+					notify: {
+						content: '闹钟'
+					},
+					alarm: {
+						hour: hour,
+						minutes: minute,
+						daysOfWeek: [1, 2, 3, 4, 5, 6, 7]
+					}
+				}, function (ret, err) {
+					id1 = ret.id;
+				});
+			}
+			else {
+				api.cancelNotification({
+					id: id1
+				});
+				this.clockFlag[1] = false;
+				var clockFlags = '';
+				for (let i = 0; i < 4; i++) {
+					if (this.clockFlag[i] == true) {
+						clockFlags += '1';
+					}
+					else {
+						clockFlags += '0';
+					}
+				}
+				api.ajax({
+					url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.getid,
+					method: 'put',
+					headers: {
+						"Content-Type": "application/json;charset=utf-8",
+					},
+					data: {
+						body: {
+							clockFlags: clockFlags,
+						}
+					}
+				}, function (ret, err) {
+					if (err) {
+						api.alert({ msg: JSON.stringify(err) });
+					};
+				});
+			}
+		},
+		noticealarm3(e) {
+			var hour=this.evening[0]==0?this.evening[1]-0:this.evening.substring(0,2)-0;
+			var minute=this.evening[7]==0?this.evening[8]-0:this.evening.substring(7,9)-0;
+			if (e.currentTarget.checked) {
+				this.clockFlag[2] = true;
+				var clockFlags = '';
+				for (let i = 0; i < 4; i++) {
+					if (this.clockFlag[i] == true) {
+						clockFlags += '1';
+					}
+					else {
+						clockFlags += '0';
+					}
+				}
+				api.ajax({
+					url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.getid,
+					method: 'put',
+					headers: {
+						"Content-Type": "application/json;charset=utf-8",
+					},
+					data: {
+						body: {
+							weekFrequency: '1111111',
+							clockFlags: clockFlags,
+						}
+					}
+				}, function (ret, err) {
+					if (err) {
+						api.alert({ msg: JSON.stringify(err) });
+					};
+				});
+				api.notification({
+					notify: {
+						content: '闹钟'
+					},
+					alarm: {
+						hour: hour,
+						minutes: minute,
+						daysOfWeek: [1, 2, 3, 4, 5, 6, 7]
+					}
+				}, function (ret, err) {
+					id1 = ret.id;
+				});
+			}
+			else {
+				api.cancelNotification({
+					id: id1
+				});
+				this.clockFlag[2] = false;
+				var clockFlags = '';
+				for (let i = 0; i < 4; i++) {
+					if (this.clockFlag[i] == true) {
+						clockFlags += '1';
+					}
+					else {
+						clockFlags += '0';
+					}
+				}
+				api.ajax({
+					url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.getid,
+					method: 'put',
+					headers: {
+						"Content-Type": "application/json;charset=utf-8",
+					},
+					data: {
+						body: {
+							clockFlags: clockFlags,
+						}
+					}
+				}, function (ret, err) {
+					if (err) {
+						api.alert({ msg: JSON.stringify(err) });
+					};
+				});
+			}
+		},
+		noticealarm4(e) {
+			var hour=this.undefine[0]==0?this.undefine[1]-0:this.undefine.substring(0,2)-0;
+			var minute=this.undefine[7]==0?this.undefine[8]-0:this.undefine.substring(7,9)-0;
+			if (e.currentTarget.checked) {
+				this.clockFlag[3] = true;
+				var clockFlags = '';
+				for (let i = 0; i < 4; i++) {
+					if (this.clockFlag[i] == true) {
+						clockFlags += '1';
+					}
+					else {
+						clockFlags += '0';
+					}
+				}
+				api.ajax({
+					url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.getid,
+					method: 'put',
+					headers: {
+						"Content-Type": "application/json;charset=utf-8",
+					},
+					data: {
+						body: {
+							weekFrequency: '1111111',
+							clockFlags: clockFlags,
+						}
+					}
+				}, function (ret, err) {
+					if (err) {
+						api.alert({ msg: JSON.stringify(err) });
+					};
+				});
+				api.notification({
+					notify: {
+						title: '服药闹钟',
+						content: '服药时间已到'
+					},
+					alarm: {
+						hour: hour,
+						minutes: minute,
+						daysOfWeek: [1, 2, 3, 4, 5, 6, 7]
+					}
+				}, function (ret, err) {
+					id1 = ret.id;
+				});
+			}
+			else {
+				api.cancelNotification({
+					id: id1
+				});
+				this.clockFlag[3] = false;
+				var clockFlags = '';
+				for (let i = 0; i < 4; i++) {
+					if (this.clockFlag[i] == true) {
+						clockFlags += '1';
+					}
+					else {
+						clockFlags += '0';
+					}
+				}
+				api.ajax({
+					url: 'http://124.222.44.207:5000/drugLibrary/drugs/' + this.getid,
+					method: 'put',
+					headers: {
+						"Content-Type": "application/json;charset=utf-8",
+					},
+					data: {
+						body: {
+							clockFlags: clockFlags,
+						}
+					}
+				}, function (ret, err) {
+					if (err) {
+						api.alert({ msg: JSON.stringify(err) });
+					};
+				});
+			}
+		}
+	}
+}
+</script>
+<style>
+.view_1 {
+	width: 100%;
+	height: 100%;
+}
+.date {
+	margin-top: 80px;
+	height: 30px;
+	text-align: center;
+}
+.datenumber {
+	font-size: 20px;
+	color: grey;
+}
+.time {
+	height: 60px;
+	text-align: center;
+	display: flex;
+}
+.timenumber {
+	color: black;
+	font-size: 50px;
+}
+.clock {
+	margin-top: 50px;
+}
+.list {
+	display: flex;
+	width: 100%;
+	flex-direction: row;
+	border-radius: 5rpx;
+	border-style: double;
+	border-color: #f0f0f0;
+	border-width: 1px;
+	position: relative;
+	margin-top: 5px;
+}
+.information {
+	display: flex;
+	flex-direction: column;
+	padding-right: 175px;
+}
+.picker {
+	background-color: #ffffff;
+	border-bottom-style: 2px double #f0f0f0;
+	border-top-style: 2px double #f0f0f0;
+}
+.time1 {
+	margin-left: 30px;
+}
+.timeinformation {
+	margin-top: 5px;
+	margin-left: 15px;
+}
+.switchbutton {
+	padding-top: 15px;
+}
+
+.text {
+	font-size: 11px;
+}
+
+.picker-label {
+	height: 60px;
+	text-align: center;
+	display: flex;
+	font-size: 35px;
+	border-bottom-style: 2px double #f0f0f0;
+	border-top-style: 2px double #f0f0f0;
+}
+</style>

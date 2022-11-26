@@ -1,0 +1,191 @@
+<template>
+	<scroll-view scroll-y class="shopping-list">
+		<view class="sl-list_box">
+			<view class="sl-card_one" v-for="(item,index) in list">
+				<view class="sl-chk_img_box" data-id={item.cartid}>
+					<image class="sl-chk_img" src={index == active ? "http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/015eca78c47045f0c20354ad187a7191.png":'http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/f9b7e811f27b1a39bb33250a69ffd26e.png'}></image>
+				</view>
+				<image class="sl-card_img" src={item.image} mode="aspectFill" data-index={index}></image>
+				<view class="sl-card_details">
+					<text class="sl-card_title" style="white-space:nowrap" data-index={index}>{item.title}</text>
+					<view class="sl-card_tips" data-index={index}>
+						<text class="sl-card_tip">{item.key ? item.key : '默认规格'}}</text>
+						<image class="sl-card_lower" src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/0de2da04366a9cb90a80baa70b455b32.png"></image>
+						<text class="sl-flex1 sl-card_dz" v-show={item.isjia==0}>已下架</text>
+					</view>
+					<view class="sl-card_pbox">
+						<text class="sl-card_price">{'¥'+item.price}</text>
+						<view class="sl-card_num">
+							<text class={'sl-card_btn'+(item.buynum==1?' card_btn_disable':'')}
+								data-index={index}>-</text>
+							<text class="sl-card_num_text">{item.buynum}</text>
+							<text class="sl-card_btn" data-index={index}>+</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</scroll-view>
+</template>
+<script>
+export default {
+	name: 'hoc-shopping-list-od',
+	props: {
+		list: {
+			type: Array,
+			default: function () {
+				return []
+			}
+		},
+		active:{
+			type:Number,
+			default:1
+		}
+	},
+	apiready() {//like created
+
+	},
+	data() {
+		return {
+			list:this.props.list || [
+				{
+				key: "S",
+				buynum: 1,
+				id: "ed3146d0-d27c-11ec-a361-2bac36d4ce47",
+				title: "夏新款套装女洋气时尚短裤阔腿裤两件套小个",
+				image:
+					"http://a45a26425b0620bae99d.qiniucdn.apicloud-system.com/apicloud/59f067dabd3948bc3db6b0aff029386b.png",
+				price: 167,
+				isjia: 0,
+				},
+				{
+				key: "M",
+				buynum: 3,
+				id: "5c266300-d27c-11ec-a361-2bac36d4ce47",
+				title: "港风套装女复古chic减龄短袖 ins复",
+				image:
+					"http://a45a26425b0620bae99d.qiniucdn.apicloud-system.com/apicloud/2375aac3ca9e2edc8e5306e51c2b71a6.png",
+				price: 100,
+				isjia: 1,
+				},
+				{
+				key: "S",
+				buynum: 6,
+				id: "75c8b160-d27b-11ec-a361-2bac36d4ce47",
+				title: "莫代尔无袖吊带连衣裙春秋侧开叉长裙女夏季内搭修身显瘦打底裙子",
+				image:
+					"http://a45a26425b0620bae99d.qiniucdn.apicloud-system.com/apicloud/0a1734d526411ffe3214d45a186c88f2.png",
+				price: 699,
+				isjia: 1,
+				}
+			],
+			active: this.props.active || 1
+		}
+	},
+	methods: {
+
+	}
+}
+</script>
+<style scoped>
+.shopping-list {
+	flex: 1;
+}
+/* list */
+.sl-list_box {
+	background-color: white;
+	border-radius: 4px;
+	margin: 10px 15px;
+}
+.sl-card_one {
+	flex-direction: row;
+	height: 120px;
+	padding: 15px 0;
+	border-bottom: 1px solid #f8f8f8;
+}
+.sl-card_img {
+	width: 90px;
+	height: 68px;
+	flex-shrink: 0;
+	border-radius: 6px;
+}
+.sl-chk_img_box {
+	justify-content: center;
+	width: 35px;
+	height: 68px;
+}
+.sl-chk_img {
+	width: 20px;
+	height: 20px;
+}
+.sl-card_details {
+	flex: 1;
+	margin-left: 15px;
+	overflow: hidden;
+}
+.sl-card_title {
+	width: 100%;
+	font-size: 15px;
+	color: #333333;
+	height: 18px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: block;
+	white-space: nowrap;
+}
+.sl-card_tips {
+	flex-direction: row;
+	align-items: center;
+	margin-top: 8px;
+}
+.sl-card_tip {
+	font-size: 12px;
+	color: #999999;
+	padding: 0 4px;
+	background-color: #f9faf9;
+	margin-right: 5px;
+}
+.sl-card_lower {
+	width: 10px;
+	height: 10px;
+}
+.sl-card_dz {
+	font-size: 12px;
+	text-align: right;
+	color: #999999;
+}
+.sl-card_pbox {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 18px;
+}
+.sl-card_price {
+	font-size: 14px;
+	color: #ff7037;
+}
+.sl-card_num {
+	flex-direction: row;
+	align-items: center;
+	width: 106px;
+	height: 30px;
+	border: 1px solid #f8f8f8;
+	border-radius: 4px;
+}
+.sl-card_btn {
+	width: 35px;
+	text-align: center;
+	font-size: 20px;
+	color: #555555;
+}
+.sl-card_btn_disable {
+	color: #cccccc;
+}
+.sl-card_num_text {
+	flex: 1;
+	text-align: center;
+	font-size: 14px;
+	color: #333333;
+}
+</style>

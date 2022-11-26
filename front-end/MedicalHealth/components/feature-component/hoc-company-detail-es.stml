@@ -1,0 +1,23 @@
+<template>
+	<view class="company-detail">
+		<rich-text :nodes='html_detail' />
+	</view>
+</template>
+<script>
+export default {
+	name: 'hoc-company-detail-es',
+	props: {
+		html_detail: {
+			type: String,
+			default: ''
+		}
+	},
+	data(){
+		return{
+			html_detail:this.props.html_detail !== undefined ? this.props.html_detail : "<img style='width: 100%;' src='http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/049597870908fc92d2fe5f19541cfa1c.png' alt='detail'/>\n"
+		}
+	}
+}
+</script>
+<style>
+</style>

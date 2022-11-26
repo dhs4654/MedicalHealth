@@ -1,0 +1,296 @@
+<template>
+    <view class="page">
+
+        <view class="chooseMode">
+            <text class="mode_btn" @click = "isMode1" :class="drugsMsg ? 'isIt' : 'isNot' ">药物信息</text>
+            <text class="mode_btn" @click = "isMode2" :class="drugsQA ? 'isIt' : 'isNot' ">药物问答</text>
+        </view>
+
+
+		<!-- 搜索 -->
+		<view class="search_container">
+			<view class="search_box">
+				<image class="search_img" src="search.png"></image>
+				<input class="search_int" autofocus type="text" placeholder="请输入搜索内容" confirm-type="search" value={search_key} oninput="onInput" onconfirm="search"></input>
+			</view>		
+			<text class="search_btn" onclick="cancel">取消</text>
+		</view>
+
+
+
+		<!-- <scroll-view class="scroll-view" scroll-y enable-back-to-top onscrolltolower="onscrolltolower">
+			<list-item v-for="(item) in drugsList" item={item} showHot onitemClick="fnOpenDetails"></list-item>
+			<no-data v-if={showNoData} image="nosearch.png" desc="查询无果"></no-data>
+		</scroll-view> -->
+
+
+        <view v-if="drugsMsg && search_key == '' && showResult == false " class="recommend">
+            <text class="topic" decode = "{{true}}">&nbsp;&nbsp;推荐药物信息查询：</text>
+            <view v-for="item in drugsList.slice(0, 4)" >
+                <view class="recommendList" @click = "readDetail(item)">
+                    <image class="contentImg" src="999.png"></image>
+                    <text class="contentTxt" >{{item.name}}</text>
+                </view>
+            </view>
+        </view>
+
+        <view v-if="drugsQA && search_key == ''  && showResult == false " class="recommend">
+            <text class="topic" decode = "{{true}}">&nbsp;&nbsp;热门问答：</text>
+            <view v-for="item in drugsList.slice(5, 8)" >
+                <view class="recommendList" @click = "readDetail(item)">
+                    <image class="contentImg" src="999.png"></image>
+                    <text class="contentTxt" >{{item.name}}</text>
+                </view>
+            </view>
+        </view>
+
+        <!-- result of search -->
+        <view v-if="showResult == true">
+            <view class="res">
+                <image class="resImg" src="999.png"></image>
+                <text class="resTxt">价格： {drugDetail.price}</text>
+                <text class="resTxt">类型： {drugDetail.category}</text>
+            </view>
+        </view>
+
+
+    </view>
+</template>
+<script>
+	// import $util from '../../utils/util.js'
+	// import '../../components/list-item.stml'
+	// import '../../components/no-data.stml'
+	export default {
+	// 	name: 'search',
+		data() {
+			return{
+				search_key: '',
+				drugsList: [
+                    {name: '苹果',
+                    price: 25,
+                    category: "水果"
+                    }, {
+                    name: '香蕉',
+                    price: 15,
+                    category: "水果"
+                    }, {
+                    name: '雪梨',
+                    price: 65,
+                    category: "水果"
+                    }, {
+                    name: '宝马',
+                    price: 2500,
+                    category: "汽车"
+                    }, {
+                    name: '奔驰',
+                    price: 10025,
+                    category: "汽车"
+                    }, {
+                    name: '柑橘',
+                    price: 15,
+                    category: "水果"
+                    }, {
+                    name: '奥迪',
+                    price: 25,
+                    category: "汽车"
+                    }
+                ],
+                drugDetail: {},
+				page: 1,
+				haveMore: true,
+				loading: false,
+				showNoData: false,
+                drugsMsg: true,     //mode1
+                drugsQA: false,     //mode2
+                showResult: false,
+			}
+		},
+		methods: {
+			apiready(){
+				
+			},
+
+            isMode1() {
+                this.data.drugsMsg = true;   
+                this.data.drugsQA = false;
+                this.data.search_key = '';
+                this.data.showResult = false;
+                this.data.drugDetail = {};
+            },
+
+            isMode2() {
+                this.data.drugsMsg = false;   
+                this.data.drugsQA = true;
+                this.data.search_key = '';
+                this.data.showResult = false;
+                this.data.drugDetail = {};
+            },
+
+			onInput(e){
+				this.data.search_key = e.detail.value;
+			},
+
+			search(e){
+				let key = this.data.search_key;
+                // api.alert({msg:key});
+				if (key) {
+					this.getData(key);
+				} else {
+					this.data.drugDetail = [];
+				}
+			},
+			cancel(){
+				this.data.search_key = '';
+                this.data.showResult = false;
+                this.data.drugDetail = {};
+			},
+            readDetail(item) {
+                this.data.search_key = item.name;
+                this.data.showResult = true;
+                this.data.drugDetail = item;
+                // api.alert({msg: item.price});
+            },
+			getData(key){
+				// let that = this;
+                // api.alert({msg:key});
+                for (let item of this.data.drugsList) {
+                    // api.alert({msg:item.price});
+                    if (item.name == key) {
+                        this.data.drugDetail = item;
+                        this.data.showResult = true;
+                        return ;
+                    }
+                }
+			}
+		}
+	}
+</script>
+<style>
+.page {
+	height: 100%;
+	background-color: #f8f8f8;
+}
+/* modechoose */
+.chooseMode {
+    width: 100%;
+	height:70rpx;
+	background-color: #3db8a3;
+	display: flex;
+	white-space: nowrap;
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: space-around;
+}
+
+.mode_btn {
+    height: 45px;
+	line-height: 45px;
+    background-color: #3db8a3;
+	display: inline-block;
+}
+
+.isNot {
+	font-size: 18px;
+	font-weight: 600;
+	margin-top: 3px;
+    border-right: 1px solid #3db8a3;
+	color: white;
+}
+
+.isIt {
+	font-size: 20px;
+	font-weight: 600;
+	margin-top: 5px;
+	border-right: 1px solid #3db8a3;
+	color: blue
+}
+
+/* search */
+.search_container{
+	flex-direction: row;
+	align-items: center;
+	height: 60px;
+	background-color: #fff;
+}
+
+.search_box{
+	flex-direction: row;
+    align-items: center;
+	flex: 1;
+    height: 30px;
+    background-color: #F5F5F5;
+    border-radius: 15px;
+	margin-left: 15px;
+}
+
+.search_img{
+    width: 18px;
+    height: 18px;
+    margin-left: 13px;
+    margin-right: 6px;
+}
+
+.search_int{
+	flex: 1;
+	font-size: 16px;
+	color: #333;
+	background-color: transparent;
+	border: none;
+}
+
+.search_btn{
+    color: #666;
+    font-size: 16px;
+	padding: 0 15px;
+}
+
+/* recommend */
+.recommend {
+    margin-top: 20%;
+}
+
+.topic {
+    font-size: 20px;
+    color: teal;
+    margin-bottom: 20px;
+}
+
+.contentTxt {
+    font-size: 18px;
+    color: black;
+    display: inline-block;
+    text-align: left;
+    margin-left: 10px;
+}
+
+.contentImg {
+    width: 100px;
+    margin-left: 3px;
+    margin-right: 6px;
+}
+
+.recommendList {
+    margin-top: 20px;
+    margin-left: 10px;
+    text-align: left;
+    display: flex;
+	flex-direction: row;
+}
+
+/* result */
+.resImg {
+    width: 200px;
+    margin-left: 3%;
+    margin-top: 5%;
+}
+.resTxt {
+    font-size: 18px;
+    color: black;
+    margin-top: 10px;
+}
+/* list */
+.scroll-view{
+	flex: 1;
+	margin-top: 15px;
+}
+</style>

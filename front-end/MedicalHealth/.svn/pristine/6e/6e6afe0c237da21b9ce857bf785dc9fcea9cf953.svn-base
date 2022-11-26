@@ -1,0 +1,58 @@
+<template>
+    <safe-area class="view_1">
+        <hoc-nav-bar-sgm title="我的药库">=</hoc-nav-bar-sgm>
+        <hoc-tab-switch-et :tabList="hocTabSwitchEtTabList"></hoc-tab-switch-et>
+        <avm-list>
+            <avm-list-item class="avm-list-item_1" children="阿司匹林">
+            </avm-list-item>
+        </avm-list>
+        <avm-list>
+            <avm-list-item children="罗红霉素"></avm-list-item>
+        </avm-list>
+        <avm-list>
+            <avm-list-item children="速效救心丸"></avm-list-item>
+        </avm-list>
+        //用到的vant的list组件来构成的下拉刷新的
+        <van-list
+        v-model:loading="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+        >
+        <van-cell v-for="item in list" :key="item" :title="item" />
+        </van-list>
+    </safe-area>
+</template>
+<script>
+import "../../components/feature-component/hoc-tab-switch-et.stml";
+import "../../components/avm-ui/list";
+import "../../components/feature-component/hoc-case-list-es.stml";
+import "../../components/feature-component/hoc-nav-bar-sgm.stml";
+import "../../components/feature-component/hoc-shopping-list-od.stml";
+export default {
+    name: 'page',
+    data() {
+        return {
+            hocTabSwitchEtTabList: [{
+                name: "全部"
+            }, {
+                name: "我的"
+            }, {
+                name: "家人"
+            }]
+        };
+    }
+};
+</script>
+<style>
+.view_1 {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-size: 10px
+}
+.avm-list-item_1 {
+    justify-content: flex-start;
+
+}
+</style>
