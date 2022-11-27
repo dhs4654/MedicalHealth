@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<style type="text/css">
+#bodyDiv{
+width: 600px;
+height: 400px;
+background: skyblue;
+margin: 100px auto;
+border-radius: 40px;
+box-shadow: 4px -4px 9px  rgba(0,0,0,0.4);
+position: relative;
+}
+#timeDiv{
+width: 450px;
+height: 60px;
+background: seashell;
+border-radius: 17px;
+position: absolute;
+top: 50px;
+left: 65px;
+box-shadow: 2px 2px 6px 3px rgba(0,0,0,0.3);
+}
+.btn1 input{
+width: 80px;
+height: 30px;
+position: absolute;
+top: 145px;
+right: 90px;
+border-radius: 12px;
+background: salmon;
+outline: none;
+}
+.btn2 input{
+width: 80px;
+height: 30px;
+position: absolute;
+top: 210px;
+right: 90px;
+border-radius: 12px;
+background: seagreen;
+outline: none;
+}
+.timeKuai{
+float: left;
+   width: 40px;
+   height: 35px;
+   background-color: bisque;
+   color: #f90013;
+   font-size: 16px;
+   font-family: Arial;
+   border-radius: 5px;
+   text-align: center;
+   line-height: 37px;
+   margin-top: 12px;
+  
+}
+.ziti{
+float: left;
+    margin: 24px 8px ;
+    width: 4px;
+    height: 12px;
+    font-size: 12px;
+    line-height: 12px;
+    color: saddlebrown;
+}
+#timeSet{
+width: 300px;
+height:230px;
+position: absolute;
+bottom: 5px;
+left: 5px;
+border-radius: 43px 0 45px 43px;
+background: rgba(255,0,0,0.1);
+display: none;
+}
+#timeSet input{
+display: block;
+margin: 10px;
+}
+</style>
+</head>
+<body>
+<audio id="music">
+<source  src="../img/9026.mp3"></source>
+<source  src="../img/9026.wav"></source>
+<source  src="../img/9026.ogg"></source>
+</audio>
+<div id="bodyDiv">
+<div id="timeDiv">
+<span class="timeKuai" id="time_year"></span>
+<span class="ziti">年</span>
+<span class="timeKuai" id="time_mouth" ></span>
+<span class="ziti">月</span>
+<span class="timeKuai" id="time_date" ></span>
+<span class="ziti">日</span>
+<span class="timeKuai" id="time_hour"></span>
+<span class="ziti">时</span>
+<span class="timeKuai" id="time_minute" ></span>
+<span class="ziti">分</span>
+<span class="timeKuai" id="time_seconds" ></span>
+<span class="ziti">秒</span>
+<span class="ziti"> </span>
+<span class="ziti">星期</span>
+<span class="timeKuai" id="time_day" > </span>
+</div>
+<div class="btn1">
+<input type="button" value="设置闹钟" οnclick="setclock()" />
+</div>
+<div class="btn2">
+<input type="button" value="关闭闹钟" οnclick="stop()">
+</div>
+<div id="timeSet">
+<span style="font-size: 16px ;color:saddlebrown;margin-left: 20px;">闹钟时间设置</span>
+<input type="" name="月" id="set_month" placeholder="月(1~12)"/>
+<input type="" name="日" id="set_data"  placeholder="日(1~31)"/>
+<input type="" name="时" id="set_hour"  placeholder="时(0~23)"/>
+<input type="" name="分" id="set_minute" placeholder="分(0~59)"/>
+<input type="" name="秒" id="set_seconds" placeholder="秒(0~59)"/>
+<input type="button" id="ok" value="确定" οnclick="alarmTime()"/>
+</div>
+</div>
+<script type="text/javascript">
+function getNowTime(){
+var da=new Date();
+var year=da.getFullYear();
+var month=da.getMonth();
+var date1=da.getDate();
+var hour=da.getHours();
+var minute=da.getMinutes();
+var seconds=da.getSeconds();
+var day=da.getDay();
+function xinQi(day){
+switch (day){
+case 0:
+return "天";
+case 1:
+return "一";
+case 2:
+return "二";
+case 3:
+return "三";
+case 4:
+return "四";
+case 5:
+return "五";
+default:
+return "六";
+}
+}
+document.getElementById("time_year").innerHTML=year;
+document.getElementById("time_mouth").innerHTML=month+1;
+document.getElementById("time_date").innerHTML=date1;
+document.getElementById("time_hour").innerHTML=hour;
+document.getElementById("time_minute").innerHTML=minute;
+document.getElementById("time_seconds").innerHTML=seconds;
+document.getElementById("time_day").innerHTML=xinQi(day);
+var nowTimeSet=new Date();
+var nowTime=new Date(nowTimeSet.getFullYear(),nowTimeSet.getMonth()+1,nowTimeSet.getDate(),nowTimeSet.getHours(),nowTimeSet.getMinutes(),nowTimeSet.getSeconds());
+var alarmTime=new Date(2017,document.getElementById("set_month").value,document.getElementById("set_data").value,document.getElementById("set_hour").value,document.getElementById("set_minute").value,document.getElementById("set_seconds").value);
+
+if(alarmTime.getTime()==nowTime.getTime()){
+document.getElementById("music").play();
+}
+}
+setInterval(getNowTime,100);  
+function setclock(){
+document.getElementById("timeSet").style.display="block";
+}
+function alarmTime(){
+document.getElementById("timeSet").style.display="none";
+}
+function stop(){
+document.getElementById("music").pause();
+}
+</script>
+
+</body>
+
+</html>

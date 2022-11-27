@@ -1,0 +1,60 @@
+<template>
+	<safe-area>
+		<view class="nav-bar">
+			<view class="nav-bar-back" v-if="isBack">
+				<image class="nav-bar-icon" src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/6958c7448f8d7106d3ee273fa7430063.png" />
+				<text class="nav-bar-text">返回</text>
+			</view>
+			<text class="nav-bar-text">{{ msg }}</text>
+		</view>
+	</safe-area>
+</template>
+<script>
+export default {
+	name: "hoc-nav-bar-od",
+	props: {
+		msg: {
+			type: String,
+			default: ''
+		},
+		isBack:{
+			type:Boolean,
+			default:false
+		}
+	},
+	data(){
+		return{
+			msg: this.props.msg !== undefined ? this.props.msg : '首页',
+			isBack: this.props.isBack || false
+		}
+	}
+}
+</script>
+<style scoped>
+.nav-bar {
+	width: 100%;
+	height: 45px;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	border-bottom: 1px solid #ccc;
+	background-color: #fff;
+}
+.nav-bar-back {
+	position: absolute;
+	left: 15px;
+	width: 100px;
+	flex-direction: row;
+	justify-content: left;
+	align-items: center;
+}
+.nav-bar-icon {
+	margin-right: 5px;
+	width: 15px;
+	height: 15px;
+}
+.nav-bar-text {
+	font-size: 18px;
+	color: #333;
+}
+</style>

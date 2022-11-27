@@ -1,0 +1,84 @@
+<template>
+	<view class="a-tabs">
+		<view v-for="(item, index) in tabList" :key="`tab-switch-et-${index}`" class="a-tab-item" @click="tabClick(item, index)">
+			<text :class="`a-tab-item-text  ${current === index ? 'a-tab-item-text-active' : ''}`">{item.name}</text>
+			<text class="a-tab-item-line" v-if="current === index"></text>
+		</view>
+	</view>
+</template>
+<script>
+export default {
+	name: 'hoc-tab-switch-et',
+	apiready() {//like created
+
+	},
+	props: {
+		tabList: Array,
+		curTabIndex: Number
+	},
+	data() {
+		return {
+			current: this.props.curTabIndex !== undefined ? this.props.curTabIndex : 0,
+			tabList: this.props.tabList || [
+				{
+					"name": "雅思培训"
+				},
+				{
+					"name": "托福培训"
+				},
+				{
+					"name": "商务英语"
+				},
+				{
+					"name": "少儿英语"
+				}
+			]
+		}
+	},
+	methods: {
+		tabClick(item, index) {
+			this.data.current = index;
+			this.fire('tabClick', { data: item, curTabIndex: index })
+		}
+	}
+}
+</script>
+<style>
+.a-tabs {
+	width: 100%;
+	justify-content: space-between;
+	align-items: center;
+	height: 44px;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	flex-shrink: 0;
+	background: #fff;
+	overflow: auto;
+}
+.a-tab-item {
+	flex: 1;
+	height: 100%;
+	padding: 0 12px;
+	justify-content: center;
+	align-items: center;
+}
+.a-tab-item-text {
+	color: #666;
+	font-size: 14px;
+	font-weight: normal;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+.a-tab-item-text-active {
+	color: #333;
+	font-weight: bold;
+}
+.a-tab-item-line {
+	position: absolute;
+	bottom: 0;
+	background: #f1c694;
+	width: 20px;
+	height: 2px;
+}
+</style>
