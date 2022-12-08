@@ -156,59 +156,41 @@ class drugsInfoView(Resource):
                             'code': 200, 
                             'msg': '删除成功'
                         })
- 
-# 根据电话修改
-class drugsBasicView(Resource):
-    
-    def put(self, id):
-        args = request.json
-        clockFlags = args.get('clockFlags')
-        clockTime = args.get('clockTime')
-        weekFrequency = args.get('weekFrequency')
-        telephone = args.get('telephone')
 
-        if not telephone:
-            return jsonify({
-                                'code': 400, 
-                                'msg': '请传入电话'
-                           })
-        user_info = User.query.filter_by(telephone=telephone).first()
+# 根据电话获取
+class drugsGetByTelephoneView(Resource):
 
-        if not user_info:
-            return jsonify({
-                                'code': 400, 
-                                'msg': '用户不存在'
-                           })
-
-        if user_info.identity != 'client':
-            return jsonify({
-                                'code': 400, 
-                                'msg': '绑定对象非client, 请确认正确修改对象'
-                           })
-        
-        
-         # 字段值不为空,且修改后的值发生改变 才进行修改
-        flag = False
-        for item in res_info:
-            if item.name == name:
-                flag = True
-                if clockFlags and clockFlags != item.clockFlags:
-                    item.clockFlags = clockFlags
-                if clockTime and clockTime != item.clockTime:
-                    item.clockTime = clockTime
-                if weekFrequency and weekFrequency != item.weekFrequency:
-                    item.weekFrequency = weekFrequency
-        
-        if flag == False:
-            return jsonify({
-                                'code': 400, 
-                                'msg': '请传入正确的药物名'
-                           })
-        db.session.commit()
+     def get(self, telephone):
+        drugs_list = DrugModel.query.filter_by(telephone=telephone).all()
+        drugs_all = []
+        for drug in drugs_list:
+            data = {
+                'id': drug.id,
+                'name': drug.name,
+                'desc': drug.desc,
+                'manufacturedate': drug.manufacturedate,
+                'duedate': drug.duedate,
+                'owner': drug.owner,
+                # 'img': request.scheme + '://' + request.host + '/' + drug.img,
+                #   协议 + :// + 主机地址 + / + 图片名
+                # 'img': '%s://%s/%s' % (request.scheme, request.host, drug.img)
+                'img': 'http://127.0.0.1:5000/' + drug.img,
+                'clockFlags': drug.clockFlags,
+                'clockTime': drug.clockTime,
+                'weekFrequency': drug.weekFrequency,
+                'telephone': drug.telephone
+                
+            }
+            drugs_all.append(data)
         return jsonify({
                             'code': 200, 
-                            'msg': '修改成功'
+                            'msg': '药品列表获取成功',
+                            'data': drugs_all
                         })
+    
+     def post(self, telephone):
+        return self.get(telephone)
+        
 
 # 上传图片
 class upLoadView(Resource):
@@ -229,5 +211,5 @@ class upLoadView(Resource):
  
 api.add_resource(drugsView, '/drugs')
 api.add_resource(drugsInfoView, '/drugs/<int:id>')
-api.add_resource(drugsBasicView, '/set/<int:id>')
+api.add_resource(drugsGetByTelephoneView, '/getByTelephone/<string:telephone>')
 api.add_resource(upLoadView, '/upload')

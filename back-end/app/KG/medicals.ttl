@@ -1,0 +1,1128 @@
+@prefix blcu: <http://www.blcu.edu.cn/ontology#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix schema: <http://schema.org/> .
+@prefix : <http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13> .
+
+
+<http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:不同时服用
+:blcu:不同时服用 rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf owl:topObjectProperty ;
+            rdfs:domain :blcu:食物 ,
+                        :blcu:食物分组 ;
+            rdfs:range :blcu:药品 .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:不同时食用
+:blcu:不同时食用 rdf:type owl:ObjectProperty ;
+            rdfs:subPropertyOf owl:topObjectProperty ;
+            rdfs:domain :blcu:药品 ;
+            rdfs:range :blcu:食物 ,
+                      :blcu:食物分组 .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:具有
+:blcu:具有 rdf:type owl:ObjectProperty ;
+        rdfs:subPropertyOf owl:topObjectProperty ;
+        rdfs:domain :blcu:药品 ;
+        rdfs:range :blcu:中药功效 .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:具有味道
+:blcu:具有味道 rdf:type owl:ObjectProperty ;
+          rdfs:subPropertyOf owl:topObjectProperty ;
+          rdfs:domain :blcu:药品 ;
+          rdfs:range :blcu:药物性味 .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:含有
+:blcu:含有 rdf:type owl:ObjectProperty ;
+        rdfs:subPropertyOf owl:topObjectProperty ;
+        owl:inverseOf :blcu:被含有 ;
+        rdfs:domain :blcu:药品 ;
+        rdfs:range :blcu:药物成分 .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:唯一对应
+:blcu:唯一对应 rdf:type owl:ObjectProperty ;
+          rdfs:subPropertyOf owl:topObjectProperty ;
+          rdf:type owl:InverseFunctionalProperty ,
+                    owl:SymmetricProperty ,
+                    owl:ReflexiveProperty ;
+          rdfs:domain :blcu:药品 ;
+          rdfs:range :blcu:国药准字 .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:治疗
+:blcu:治疗 rdf:type owl:ObjectProperty ;
+        rdfs:subPropertyOf owl:topObjectProperty ;
+        rdfs:domain :blcu:药品 ;
+        rdfs:range :blcu:疾病 ,
+                    :blcu:症状 ,
+                    :blcu:证候 .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:表现为
+:blcu:表现为 rdf:type owl:ObjectProperty ;
+          rdfs:subPropertyOf owl:topObjectProperty ;
+          rdfs:domain :blcu:疾病 ;
+          rdfs:range :blcu:症状 ,
+                    :blcu:证候 .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:表现性状
+:blcu:表现性状 rdf:type owl:ObjectProperty ;
+          rdfs:subPropertyOf owl:topObjectProperty ;
+          rdfs:domain :blcu:药品 ;
+          rdfs:range :blcu:药物剂型 .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:被含有
+:blcu:被含有 rdf:type owl:ObjectProperty ;
+          rdfs:subPropertyOf owl:topObjectProperty ;
+          rdfs:domain :blcu:药物成分 ;
+          rdfs:range :blcu:药品 .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:id
+:blcu:id rdf:type owl:Class ;
+        owl:disjointWith :blcu:中药功效 .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:中药功效
+:blcu:中药功效 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:人群
+:blcu:人群 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:国药准字
+:blcu:国药准字 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:疾病
+:blcu:疾病 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:症状
+:blcu:症状 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:药品
+:blcu:药品 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:药物剂型
+:blcu:药物剂型 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:药物性味
+:blcu:药物性味 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:药物成分
+:blcu:药物成分 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:证候
+:blcu:证候 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:食物
+:blcu:食物 rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/nsn空白/ontologies/2022/5/untitled-ontology-13#blcu:食物分组
+:blcu:食物分组 rdf:type owl:Class .
+
+
+#################################################################
+#    General axioms
+#################################################################
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :blcu:id
+                :blcu:中药功效
+                :blcu:人群
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :blcu:id
+                :blcu:中药功效
+                :blcu:人群
+                :blcu:国药准字
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :blcu:id
+                :blcu:中药功效
+                :blcu:人群
+                :blcu:国药准字
+                :blcu:疾病
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :blcu:id
+                :blcu:中药功效
+                :blcu:人群
+                :blcu:国药准字
+                :blcu:疾病
+                :blcu:症状
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :blcu:id
+                :blcu:中药功效
+                :blcu:人群
+                :blcu:国药准字
+                :blcu:疾病
+                :blcu:症状
+                :blcu:药品
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :blcu:id
+                :blcu:中药功效
+                :blcu:人群
+                :blcu:国药准字
+                :blcu:疾病
+                :blcu:症状
+                :blcu:药品
+                :blcu:药物剂型
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :blcu:id
+                :blcu:中药功效
+                :blcu:人群
+                :blcu:国药准字
+                :blcu:疾病
+                :blcu:症状
+                :blcu:药品
+                :blcu:药物剂型
+                :blcu:药物性味
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :blcu:id
+                :blcu:中药功效
+                :blcu:人群
+                :blcu:国药准字
+                :blcu:疾病
+                :blcu:症状
+                :blcu:药品
+                :blcu:药物剂型
+                :blcu:药物性味
+                :blcu:药物成分
+              )
+] .
+
+
+[ rdf:type owl:AllDisjointClasses ;
+  owl:members ( :blcu:id
+                :blcu:中药功效
+                :blcu:人群
+                :blcu:国药准字
+                :blcu:疾病
+                :blcu:症状
+                :blcu:药品
+                :blcu:药物剂型
+                :blcu:药物性味
+                :blcu:药物成分
+                :blcu:证候
+                :blcu:食物
+                :blcu:食物分组
+              )
+] .
+
+
+blcu:0 blcu:中药功效 blcu:保肝, blcu:增强免疫,
+    blcu:止血, blcu:补气养血, blcu:调经止带,
+    blcu:造血;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:过敏体质者;
+  blcu:国药准字 blcu:Z13022373;
+  blcu:疾病 blcu:感冒;
+  blcu:症状 blcu:心慌气短, blcu:月经不调,
+    blcu:月经过多, blcu:月经量少,
+    blcu:月经错后, blcu:疲乏无力,
+    blcu:白带量多, blcu:经期腹痛,
+    blcu:腰腿酸软, blcu:阴道不规则出血;
+  blcu:药品 blcu:乌鸡白凤丸;
+  blcu:药物剂型 blcu:小蜜丸;
+  blcu:药物性味 blcu:味甜, blcu:微苦;
+  blcu:药物成分 blcu:丹参, blcu:乌鸡, blcu:五灵脂,
+    blcu:人参, blcu:地黄, blcu:大戟, blcu:天冬,
+    blcu:山药, blcu:川芎, blcu:当归, blcu:桑螵蛸,
+    blcu:海藻, blcu:熟地黄, blcu:牡蛎,
+    blcu:甘草, blcu:甘遂, blcu:白芍, blcu:皂荚,
+    blcu:芡实, blcu:芫花, blcu:藜芦, blcu:蜂蜜,
+    blcu:银柴胡, blcu:香附, blcu:鳖甲,
+    blcu:鹿角胶, blcu:鹿角霜, blcu:黄芪;
+  blcu:食物 blcu:萝卜;
+  blcu:食物分组 blcu:不易消化, blcu:寒凉, blcu:油腻,
+    blcu:生冷, blcu:荤腥, blcu:辛辣 .
+
+blcu:1 blcu:中药功效 blcu:养血, blcu:补气;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:小儿,
+    blcu:成人;
+  blcu:国药准字 blcu:Z53020415;
+  blcu:疾病 blcu:糖尿病, blcu:高血压;
+  blcu:症状 blcu:便溏, blcu:出血, blcu:呕吐,
+    blcu:咳嗽, blcu:头痛, blcu:恶心, blcu:气虚体弱,
+    blcu:泄泻, blcu:痰多, blcu:肢体劳倦,
+    blcu:脾胃虚弱, blcu:腹胀, blcu:血压上升,
+    blcu:面红皮疹, blcu:食入难化,
+    blcu:食欲不振;
+  blcu:药品 blcu:加味归芪片;
+  blcu:药物剂型 blcu:糖衣片;
+  blcu:药物性味 blcu:味甘, blcu:气香, blcu:苦, blcu:辛;
+  blcu:药物成分 blcu:党参, blcu:当归, blcu:淀粉,
+    blcu:糊精, blcu:藜芦;
+  blcu:证候 blcu:气虚体弱, blcu:气血两亏;
+  blcu:食物分组 blcu:油腻, blcu:生冷, blcu:辛辣 .
+
+blcu:10 blcu:中药功效 blcu:活血化瘀, blcu:清利湿热;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z20050811;
+  blcu:疾病 blcu:盆腔炎;
+  blcu:症状 blcu:下腹疼痛, blcu:带下量多;
+  blcu:药品 blcu:坤复康片;
+  blcu:药物成分 blcu:乌药, blcu:南刘寄奴, blcu:女贞子,
+    blcu:扁蓄, blcu:猪苓, blcu:粉萆解,
+    blcu:苦参, blcu:赤芍, blcu:香附;
+  blcu:证候 blcu:气滞, blcu:湿热, blcu:血瘀 .
+
+blcu:100 blcu:中药功效 blcu:增强免疫力, blcu:抗炎镇痛,
+    blcu:散结止痛, blcu:益气活血;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z22025456;
+  blcu:疾病 blcu:慢性盆腔炎;
+  blcu:症状 blcu:小腹疼痛, blcu:徵瘕, blcu:月经不调,
+    blcu:有癥块, blcu:有血块, blcu:痛经,
+    blcu:癥瘕, blcu:经量少, blcu:腹有徵块,
+    blcu:行经后错, blcu:行经腹痛;
+  blcu:药品 blcu:止痛化癥胶囊;
+  blcu:药物剂型 blcu:硬胶囊;
+  blcu:药物性味 blcu:味苦, blcu:微咸, blcu:气微香;
+  blcu:药物成分 blcu:三棱, blcu:丹参, blcu:党参,
+    blcu:全蝎, blcu:北败酱, blcu:土鳖虫,
+    blcu:山药, blcu:川楝子, blcu:延胡索,
+    blcu:当归, blcu:炙黄芪, blcu:炮姜,
+    blcu:白术, blcu:肉桂, blcu:芡实, blcu:莪术,
+    blcu:蜈蚣, blcu:鱼腥草, blcu:鸡血藤;
+  blcu:证候 blcu:气虚, blcu:气血, blcu:血瘀 .
+
+blcu:1000 blcu:中药功效 blcu:化湿除带, blcu:散结消癥,
+    blcu:清热解毒, blcu:祛瘀止痛;
+  blcu:国药准字 blcu:Z20080012;
+  blcu:症状 blcu:发热, blcu:小腹疼痛, blcu:带下量多,
+    blcu:慢性盆腔炎, blcu:腰骶酸痛;
+  blcu:药品 blcu:红虎灌肠液 .
+
+blcu:1001 blcu:中药功效 blcu:活血, blcu:补血, blcu:通络;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z20063052;
+  blcu:疾病 blcu:糖尿病;
+  blcu:症状 blcu:后错, blcu:月经量少, blcu:肢体麻木,
+    blcu:血虚萎黄, blcu:风湿痹痛;
+  blcu:药品 blcu:鸡血藤颗粒 .
+
+blcu:1002 blcu:中药功效 blcu:宁心安神, blcu:滋养肝肾;
+  blcu:人群 blcu:儿童, blcu:本品过敏者,
+    blcu:过敏体质者;
+  blcu:国药准字 blcu:Z20040036;
+  blcu:疾病 blcu:心脏病, blcu:感冒, blcu:慢性病,
+    blcu:糖尿病, blcu:肝病, blcu:肾病,
+    blcu:高血压;
+  blcu:症状 blcu:五心烦热, blcu:发热, blcu:多梦,
+    blcu:大便干燥, blcu:失眠, blcu:头晕,
+    blcu:少苔, blcu:弦细, blcu:心烦, blcu:易怒,
+    blcu:更年期综合症, blcu:月经紊乱,
+    blcu:烘热汗出, blcu:眩晕, blcu:耳鸣,
+    blcu:脉弦细, blcu:腰背酸痛, blcu:舌红;
+  blcu:药品 blcu:百合更年安颗粒;
+  blcu:药物剂型 blcu:颗粒;
+  blcu:药物性味 blcu:味微苦, blcu:气微香;
+  blcu:药物成分 blcu:南沙参, blcu:枸杞子, blcu:浮小麦,
+    blcu:牡蛎, blcu:百合, blcu:糊精, blcu:莲子心,
+    blcu:远志, blcu:钩藤, blcu:阿胶珠,
+    blcu:陈皮;
+  blcu:证候 blcu:肝旺, blcu:阴虚;
+  blcu:食物分组 blcu:少进油腻, blcu:辛辣 .
+
+blcu:1003 blcu:中药功效 blcu:软坚散结;
+  blcu:国药准字 blcu:Z20050224;
+  blcu:疾病 blcu:子宫肌瘤;
+  blcu:症状 blcu:乳房胀痛, blcu:小腹, blcu:经期延长,
+    blcu:经色紫黯有块, blcu:经量过多,
+    blcu:胃脘;
+  blcu:药品 blcu:宫瘤宁胶囊;
+  blcu:药物剂型 blcu:硬胶囊;
+  blcu:药物性味 blcu:微苦, blcu:气微腥;
+  blcu:药物成分 blcu:三棱, blcu:党参, blcu:半枝莲,
+    blcu:山药, blcu:拳参, blcu:海藻, blcu:甘草,
+    blcu:石见穿, blcu:蛇莓, blcu:谷芽;
+  blcu:证候 blcu:气滞, blcu:血瘀 .
+
+blcu:1004 blcu:中药功效 blcu:健脾养血, blcu:滋阴清热;
+  blcu:国药准字 blcu:Z20050818;
+  blcu:症状 blcu:下腹坠痛, blcu:出血, blcu:心烦易怒,
+    blcu:手足心热, blcu:月经提前量多,
+    blcu:月经紊乱, blcu:腰骶酸痛;
+  blcu:药品 blcu:安坤片;
+  blcu:药物成分 blcu:墨旱莲, blcu:女贞子, blcu:当归,
+    blcu:牡丹皮, blcu:白术, blcu:白芍,
+    blcu:益母草, blcu:茯苓 .
+
+blcu:1005 blcu:中药功效 blcu:养血, blcu:止痛, blcu:调经;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:本品过敏者,
+    blcu:过敏体质者;
+  blcu:国药准字 blcu:Z20026679;
+  blcu:疾病 blcu:糖尿病;
+  blcu:症状 blcu:后错, blcu:月经不调, blcu:月经过少,
+    blcu:月经量少, blcu:痛经, blcu:经期腹痛,
+    blcu:经期错后, blcu:重度痛经;
+  blcu:药品 blcu:妇科调经颗粒;
+  blcu:药物成分 blcu:大枣, blcu:川芎, blcu:延胡索,
+    blcu:当归, blcu:熟地黄, blcu:甘草,
+    blcu:白术, blcu:白芍, blcu:蔗糖, blcu:赤芍,
+    blcu:香附;
+  blcu:食物分组 blcu:生冷食物 .
+
+blcu:1006 blcu:中药功效 blcu:广谱抗菌, blcu:抑制变态反应,
+    blcu:抗炎, blcu:抗病毒, blcu:止痒,
+    blcu:清热燥湿, blcu:镇痛;
+  blcu:国药准字 blcu:Z20055123;
+  blcu:疾病 blcu:外阴炎, blcu:阴道炎;
+  blcu:症状 blcu:白带过多, blcu:红肿, blcu:阴部瘙痒;
+  blcu:药品 blcu:阿娜尔妇洁液;
+  blcu:药物成分 blcu:冰片, blcu:沒食子, blcu:珊瑚,
+    blcu:石榴皮, blcu:花椒, blcu:苦豆子,
+    blcu:蛇床子 .
+
+blcu:1007 blcu:中药功效 blcu:固经止带, blcu:滋阴清热;
+  blcu:国药准字 blcu:Z31020139;
+  blcu:症状 blcu:月经先期, blcu:经血量多,
+    blcu:色紫黑;
+  blcu:药品 blcu:固经丸;
+  blcu:药物成分 blcu:椿皮, blcu:白芍, blcu:香附,
+    blcu:黄柏, blcu:黄芩, blcu:龟甲;
+  blcu:证候 blcu:血热, blcu:阴虚 .
+
+blcu:1008 blcu:中药功效 blcu:收敛止痒, blcu:清热解毒,
+    blcu:燥湿杀虫;
+  blcu:国药准字 blcu:Z22023346;
+  blcu:疾病 blcu:阴道炎;
+  blcu:药品 blcu:康复灵栓;
+  blcu:药物剂型 blcu:栓剂;
+  blcu:药物成分 blcu:儿茶, blcu:冰片, blcu:大黄,
+    blcu:紫草 .
+
+blcu:1009 blcu:中药功效 blcu:清热燥湿, blcu:祛瘀生肌;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:过敏体质者,
+    blcu:过敏者;
+  blcu:国药准字 blcu:Z20090758;
+  blcu:疾病 blcu:宫颈息肉, blcu:宫颈粘膜炎,
+    blcu:宫颈糜囊肿, blcu:宫颈糜烂,
+    blcu:宫颈肥大, blcu:慢性宫颈炎;
+  blcu:症状 blcu:口苦咽干, blcu:带下量多,
+    blcu:滑, blcu:疼痛, blcu:瘙痒, blcu:白,
+    blcu:皮疹, blcu:脉弦, blcu:腰腹坠胀,
+    blcu:舌红苔, blcu:色黄, blcu:黄腻;
+  blcu:药品 blcu:椿乳凝胶;
+  blcu:药物性味 blcu:气芳香;
+  blcu:药物成分 blcu:乳香, blcu:冰片, blcu:椿皮,
+    blcu:牡丹皮, blcu:甘油, blcu:羧甲基纤维素钠,
+    blcu:羧笨乙酯, blcu:聚山梨酯,
+    blcu:苦参;
+  blcu:证候 blcu:湿热瘀阻 .
+
+blcu:101 blcu:中药功效 blcu:止血, blcu:润燥, blcu:补血滋阴;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:过敏体质者,
+    blcu:过敏者;
+  blcu:国药准字 blcu:Z20083178;
+  blcu:疾病 blcu:感冒, blcu:糖尿病, blcu:高血压;
+  blcu:症状 blcu:便血, blcu:劳嗽咯血, blcu:吐血尿血,
+    blcu:呕吐泄泻, blcu:咳嗽痰多,
+    blcu:妊娠胎漏, blcu:心烦不眠,
+    blcu:眩晕心悸, blcu:肌痿无力,
+    blcu:肺燥咳嗽, blcu:脾胃虚弱,
+    blcu:腹胀便溏, blcu:虚风内动;
+  blcu:药品 blcu:阿胶颗粒;
+  blcu:药物剂型 blcu:颗粒;
+  blcu:药物性味 blcu:味微甘, blcu:气香;
+  blcu:药物成分 blcu:粉碎, blcu:阿胶经干燥;
+  blcu:证候 blcu:血虚;
+  blcu:食物分组 blcu:油腻 .
+
+blcu:1010 blcu:中药功效 blcu:抗炎, blcu:抗血小板凝聚,
+    blcu:抗血栓, blcu:抗贫血, blcu:收缩子宫,
+    blcu:改善微循环, blcu:止痛, blcu:活血,
+    blcu:祛瘀, blcu:造血, blcu:镇痛;
+  blcu:国药准字 blcu:Z20054689;
+  blcu:症状 blcu:少腹疼痛, blcu:恶露不行,
+    blcu:月经过多, blcu:阴道流血;
+  blcu:药品 blcu:新生化颗粒;
+  blcu:药物成分 blcu:川芎, blcu:当归, blcu:桃仁,
+    blcu:炙甘草, blcu:益母草, blcu:红花 .
+
+blcu:1011 blcu:中药功效 blcu:消肿止痛, blcu:清热凉血;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z35020107;
+  blcu:疾病 blcu:子宫内膜炎, blcu:盆腔炎,
+    blcu:附件炎;
+  blcu:症状 blcu:带下, blcu:腹痛;
+  blcu:药品 blcu:妇乐颗粒;
+  blcu:药物剂型 blcu:颗粒;
+  blcu:药物性味 blcu:味甜, blcu:微苦;
+  blcu:药物成分 blcu:大血藤, blcu:大青叶, blcu:大黄,
+    blcu:川楝子, blcu:延胡索, blcu:忍冬藤,
+    blcu:牡丹皮, blcu:甘, blcu:蒲公英,
+    blcu:赤芍 .
+
+blcu:1012 blcu:中药功效 blcu:片剂, blcu:疏肝活血,
+    blcu:调经止痛;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:过敏体质者;
+  blcu:国药准字 blcu:Z20090759;
+  blcu:症状 blcu:后错, blcu:小腹隐痛, blcu:月经过多,
+    blcu:月经量少, blcu:月经错后,
+    blcu:痛经, blcu:阴道不规则出血;
+  blcu:药品 blcu:舒尔经片;
+  blcu:药物剂型 blcu:薄膜衣片;
+  blcu:药物性味 blcu:味微苦, blcu:气微;
+  blcu:药物成分 blcu:延胡索, blcu:当归, blcu:柴胡,
+    blcu:桃仁, blcu:淀粉, blcu:牛膝, blcu:牡丹皮,
+    blcu:白芍, blcu:益母草, blcu:硬脂酸镁,
+    blcu:糊精, blcu:赤芍, blcu:陈皮, blcu:香附;
+  blcu:证候 blcu:气滞血瘀;
+  blcu:食物分组 blcu:生冷食物 .
+
+blcu:1013 blcu:中药功效 blcu:活血止痛, blcu:温经散寒;
+  blcu:国药准字 blcu:Z20080026;
+  blcu:症状 blcu:乳房胀痛, blcu:四肢不温,
+    blcu:块下痛减, blcu:小腹发冷,
+    blcu:小腹疼痛, blcu:带下量多,
+    blcu:畏寒, blcu:痛经, blcu:瘀点, blcu:经血量少,
+    blcu:经行不畅, blcu:脉沉紧, blcu:舌质黯,
+    blcu:苔白, blcu:血色紫暗有块;
+  blcu:药品 blcu:宫月舒胶囊;
+  blcu:药物成分 blcu:三七, blcu:川芎, blcu:延胡索,
+    blcu:当归, blcu:沉香, blcu:白芥子,
+    blcu:肉桂;
+  blcu:证候 blcu:寒瘀 .
+
+blcu:1014 blcu:中药功效 blcu:祛瘀生新, blcu:补益气血;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:过敏体质者;
+  blcu:国药准字 blcu:Z20025791;
+  blcu:疾病 blcu:感冒;
+  blcu:症状 blcu:月经量少, blcu:月经错后,
+    blcu:腹痛, blcu:阴道不规则出血;
+  blcu:药品 blcu:补血益母颗粒;
+  blcu:药物剂型 blcu:颗粒;
+  blcu:药物性味 blcu:味甜, blcu:气香;
+  blcu:药物成分 blcu:当归, blcu:益母草, blcu:阿胶,
+    blcu:陈皮, blcu:黄芪;
+  blcu:证候 blcu:气血两虚, blcu:血瘀;
+  blcu:食物分组 blcu:寒凉, blcu:生冷辛辣, blcu:生冷食物 .
+
+blcu:1015 blcu:中药功效 blcu:祛瘀生;
+  blcu:人群 blcu:孕妇, blcu:本品过敏者;
+  blcu:国药准字 blcu:Z51020114;
+  blcu:疾病 blcu:糖尿病, blcu:高血压;
+  blcu:症状 blcu:后错, blcu:头晕心悸, blcu:月经量少,
+    blcu:经量少, blcu:腹痛, blcu:色淡质稀,
+    blcu:阴道出血;
+  blcu:药品 blcu:益母草颗粒;
+  blcu:药物性味 blcu:微苦, blcu:昧甜;
+  blcu:药物成分 blcu:益母草, blcu:蔗糖;
+  blcu:证候 blcu:气血两虚, blcu:活血调经;
+  blcu:食物分组 blcu:生冷食物 .
+
+blcu:1016 blcu:中药功效 blcu:活血化瘀, blcu:温经通脉,
+    blcu:理气止痛;
+  blcu:国药准字 blcu:Z20020102;
+  blcu:症状 blcu:乳房胀痛, blcu:冷痛, blcu:小腹胀痛,
+    blcu:手足不温, blcu:痛经, blcu:瘀斑,
+    blcu:经血暗有血块, blcu:经行不畅,
+    blcu:胸闷, blcu:舌暗;
+  blcu:药品 blcu:经舒颗粒;
+  blcu:药物剂型 blcu:颗粒;
+  blcu:药物性味 blcu:味甜, blcu:微苦, blcu:气微;
+  blcu:证候 blcu:气滞寒凝, blcu:血瘀 .
+
+blcu:1017 blcu:中药功效 blcu:清热祛湿, blcu:行气止带;
+  blcu:国药准字 blcu:Z20050369;
+  blcu:疾病 blcu:子宫内膜炎, blcu:带下病,
+    blcu:慢性盆腔炎, blcu:附件炎;
+  blcu:症状 blcu:月经不调, blcu:痛经;
+  blcu:药品 blcu:妇炎净片;
+  blcu:药物成分 blcu:两面针, blcu:五指毛桃,
+    blcu:地胆草, blcu:当归, blcu:柿叶,
+    blcu:横经席, blcu:苦玄参, blcu:菥蓂,
+    blcu:鸡血藤;
+  blcu:证候 blcu:湿热蕴结 .
+
+blcu:1018 blcu:中药功效 blcu:止痒, blcu:清热燥湿;
+  blcu:国药准字 blcu:Z20043311;
+  blcu:疾病 blcu:外阴炎, blcu:滴虫性外阴炎,
+    blcu:阴道炎;
+  blcu:症状 blcu:瘙痒, blcu:白带过多, blcu:红肿;
+  blcu:药品 blcu:阿娜尔妇洁液;
+  blcu:药物剂型 blcu:液体;
+  blcu:药物性味 blcu:具冰片香气;
+  blcu:药物成分 blcu:冰片, blcu:沒食子, blcu:珊瑚,
+    blcu:石榴皮, blcu:花椒, blcu:苦豆子,
+    blcu:蛇床子 .
+
+blcu:1019 blcu:中药功效 blcu:活血化瘀, blcu:疏肝理气;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z20025216;
+  blcu:疾病 blcu:乳腺增生;
+  blcu:症状 blcu:乳房胀痛;
+  blcu:药品 blcu:乳癖康片;
+  blcu:药物剂型 blcu:薄膜衣片;
+  blcu:药物性味 blcu:味苦, blcu:气微香;
+  blcu:证候 blcu:气滞, blcu:肝气郁结, blcu:血瘀 .
+
+blcu:102 blcu:中药功效 blcu:止带, blcu:止帮, blcu:清热,
+    blcu:除湿;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:少女,
+    blcu:绝经后患者, blcu:过敏体质者,
+    blcu:过敏者;
+  blcu:国药准字 blcu:Z13020619;
+  blcu:疾病 blcu:带下病, blcu:糖尿病, blcu:高血压;
+  blcu:症状 blcu:带下量多, blcu:赤带;
+  blcu:药品 blcu:万岁白带丸;
+  blcu:药物剂型 blcu:水丸;
+  blcu:药物成分 blcu:当归, blcu:椿皮, blcu:白芍,
+    blcu:醋香附, blcu:黄柏;
+  blcu:证候 blcu:湿热下注;
+  blcu:食物分组 blcu:油腻, blcu:生冷, blcu:辛辣 .
+
+blcu:1020 blcu:中药功效 blcu:健脾固肾, blcu:养血安胎;
+  blcu:国药准字 blcu:Z19991085;
+  blcu:症状 blcu:异位妊娠, blcu:葡萄胎;
+  blcu:药品 blcu:孕康糖浆;
+  blcu:药物剂型 blcu:液体;
+  blcu:药物性味 blcu:味甜, blcu:气微;
+  blcu:药物成分 blcu:乌梅, blcu:党参, blcu:地黄,
+    blcu:山茱萸, blcu:山药, blcu:当归,
+    blcu:杜仲, blcu:枸杞子, blcu:桑寄生,
+    blcu:狗脊, blcu:白术, blcu:白芍, blcu:益智,
+    blcu:砂仁, blcu:续断, blcu:艾叶, blcu:苎麻根,
+    blcu:茯苓, blcu:菟丝子, blcu:补骨脂,
+    blcu:阿胶, blcu:黄芩, blcu:黄芪;
+  blcu:证候 blcu:气血虚, blcu:肾虚;
+  blcu:食物分组 blcu:辛辣刺激性食物 .
+
+blcu:1021 blcu:中药功效 blcu:温补脾肾, blcu:益气荣血;
+  blcu:国药准字 blcu:Z22022734;
+  blcu:疾病 blcu:缺铁性贫血, blcu:虚劳贫血;
+  blcu:症状 blcu:体弱肢冷, blcu:发斑, blcu:心悸,
+    blcu:虚劳贫血, blcu:面色苍白;
+  blcu:药品 blcu:归参补血片;
+  blcu:药物性味 blcu:味微腥, blcu:微苦;
+  blcu:药物成分 blcu:三七, blcu:何首乌, blcu:当归,
+    blcu:枸杞子, blcu:牛鞭胶粉, blcu:牛骨髓提取物,
+    blcu:猪肝脏粉, blcu:猪脾脏浸膏粉,
+    blcu:红参, blcu:羊睾丸浸膏, blcu:黄芪,
+    blcu:龙眼肉;
+  blcu:证候 blcu:脾肾两虚 .
+
+blcu:1022 blcu:中药功效 blcu:乳少, blcu:乳汁不通,
+    blcu:无乳, blcu:气血亏虚, blcu:益气养血,
+    blcu:通络下乳;
+  blcu:人群 blcu:过敏体质者;
+  blcu:国药准字 blcu:Z20054179;
+  blcu:疾病 blcu:感冒, blcu:糖尿病;
+  blcu:症状 blcu:乳房红肿热痛, blcu:乳汁突然减少,
+    blcu:发热, blcu:恶露过多;
+  blcu:药品 blcu:通乳颗粒;
+  blcu:药物成分 blcu:党参, blcu:天花粉, blcu:当归,
+    blcu:柴胡, blcu:漏芦, blcu:熟地黄,
+    blcu:王不留行, blcu:白芍, blcu:穿山甲,
+    blcu:路路通, blcu:鹿角霜, blcu:黄芪;
+  blcu:食物分组 blcu:咸味, blcu:辛辣, blcu:酸味 .
+
+blcu:1023 blcu:中药功效 blcu:化瘀, blcu:活血, blcu:消癥;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z14020280;
+  blcu:症状 blcu:宿有瘕块, blcu:宿有癥块,
+    blcu:恶露不尽, blcu:经闭, blcu:行经腹痛;
+  blcu:药品 blcu:桂枝茯苓丸;
+  blcu:药物剂型 blcu:大蜜丸;
+  blcu:药物性味 blcu:味甜;
+  blcu:药物成分 blcu:桂枝, blcu:桃仁, blcu:牡丹皮,
+    blcu:茯苓, blcu:蜂蜜, blcu:赤芍;
+  blcu:证候 blcu:血瘀 .
+
+blcu:1024 blcu:中药功效 blcu:止带下, blcu:清湿热;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z20040011;
+  blcu:疾病 blcu:宫颈糜烂;
+  blcu:症状 blcu:头晕;
+  blcu:药品 blcu:抗宫炎颗粒;
+  blcu:药物剂型 blcu:颗粒;
+  blcu:药物性味 blcu:味甜, blcu:微涩, blcu:微苦,
+    blcu:气微;
+  blcu:药物成分 blcu:乌药, blcu:广东紫珠, blcu:益母草;
+  blcu:证候 blcu:湿热 .
+
+blcu:1025 blcu:中药功效 blcu:养血调经, blcu:舒郁化滞;
+  blcu:国药准字 blcu:Z11020145;
+  blcu:疾病 blcu:感冒;
+  blcu:症状 blcu:两胁胀痛, blcu:倦怠食少,
+    blcu:月经不调, blcu:经期不准,
+    blcu:行经腹痛, blcu:赤白带下;
+  blcu:药品 blcu:妇宝金丸;
+  blcu:药物剂型 blcu:大蜜丸;
+  blcu:药物性味 blcu:味甘, blcu:苦;
+  blcu:药物成分 blcu:党参, blcu:地黄, blcu:川芎,
+    blcu:当归, blcu:熟地黄, blcu:白术,
+    blcu:白芍, blcu:益母草, blcu:苍术,
+    blcu:茯苓, blcu:黄芪;
+  blcu:证候 blcu:气虚血寒, blcu:肝郁, blcu:风寒;
+  blcu:食物分组 blcu:生冷食物 .
+
+blcu:1026 blcu:中药功效 blcu:补血活血, blcu:调经止痛;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:过敏体质者;
+  blcu:国药准字 blcu:Z20050706;
+  blcu:疾病 blcu:感冒, blcu:糖尿病;
+  blcu:症状 blcu:月经不调, blcu:月经腹痛,
+    blcu:月经过多, blcu:月经量少,
+    blcu:月经错后, blcu:痛经, blcu:阴道不规则出血;
+  blcu:药品 blcu:当归南枣片;
+  blcu:药物剂型 blcu:薄膜衣片;
+  blcu:药物性味 blcu:味辛, blcu:气香, blcu:辣;
+  blcu:药物成分 blcu:何首乌, blcu:大枣, blcu:当归;
+  blcu:证候 blcu:血虚;
+  blcu:食物分组 blcu:寒凉, blcu:生冷食物 .
+
+blcu:1027 blcu:国药准字 blcu:Z52020174;
+  blcu:症状 blcu:月经不调, blcu:痛经, blcu:贫血衰弱;
+  blcu:药品 blcu:当归调经颗粒;
+  blcu:药物剂型 blcu:颗粒;
+  blcu:药物性味 blcu:味甜, blcu:微苦, blcu:气香,
+    blcu:辛;
+  blcu:药物成分 blcu:党参, blcu:川芎, blcu:当归,
+    blcu:熟地黄, blcu:甘草, blcu:白芍,
+    blcu:黄芪;
+  blcu:证候 blcu:血虚 .
+
+blcu:1028 blcu:中药功效 blcu:清热利湿, blcu:白带过多,
+    blcu:血通络, blcu:调经止带;
+  blcu:国药准字 blcu:Z20050087;
+  blcu:疾病 blcu:湿热下注, blcu:盆腔炎;
+  blcu:症状 blcu:白带过多;
+  blcu:药品 blcu:盆炎净胶囊;
+  blcu:药物剂型 blcu:胶囊剂;
+  blcu:药物成分 blcu:川芎, blcu:忍冬藤, blcu:狗脊,
+    blcu:益母草, blcu:蒲公英, blcu:赤芍,
+    blcu:车前草, blcu:鸡血藤;
+  blcu:证候 blcu:湿热下注 .
+
+blcu:1029 blcu:中药功效 blcu:疏肝解郁, blcu:调理冲任;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z20055529;
+  blcu:疾病 blcu:乳腺增生;
+  blcu:药品 blcu:乳增宁胶囊;
+  blcu:药物成分 blcu:天冬, blcu:川梀子, blcu:川贝母,
+    blcu:柴胡, blcu:淫羊藿, blcu:艾叶 .
+
+blcu:103 blcu:中药功效 blcu:攻寒, blcu:散寒, blcu:止痛,
+    blcu:活血, blcu:活血化瘀, blcu:理气,
+    blcu:祛瘀止痛, blcu:祛风, blcu:行气,
+    blcu:行气散寒, blcu:通经, blcu:醒脾;
+  blcu:人群 blcu:儿童, blcu:过敏体质者,
+    blcu:过敏者;
+  blcu:国药准字 blcu:Z20080041;
+  blcu:症状 blcu:小腹隐痛, blcu:月经失调,
+    blcu:气滞, blcu:痛经, blcu:腹痛;
+  blcu:药品 blcu:痛经胶囊;
+  blcu:药物剂型 blcu:硬胶囊;
+  blcu:药物性味 blcu:味微苦, blcu:气微, blcu:涩;
+  blcu:药物成分 blcu:丹参, blcu:五灵脂, blcu:山楂,
+    blcu:川芎, blcu:延胡索, blcu:木香,
+    blcu:炮姜, blcu:白芍, blcu:益母草,
+    blcu:肉桂, blcu:青皮, blcu:香附;
+  blcu:证候 blcu:亏虚, blcu:气血;
+  blcu:食物分组 blcu:生冷 .
+
+blcu:1030 blcu:中药功效 blcu:补气养血, blcu:调经止带;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:过敏体质者;
+  blcu:国药准字 blcu:Z20055050;
+  blcu:疾病 blcu:感冒;
+  blcu:症状 blcu:带下, blcu:带下量多, blcu:月经不调,
+    blcu:月经过多, blcu:月经量少,
+    blcu:月经错后, blcu:气臭, blcu:经期腹痛,
+    blcu:腰膝酸软, blcu:身体瘦弱,
+    blcu:阴道不规则出血;
+  blcu:药品 blcu:乌鸡白凤丸;
+  blcu:药物性味 blcu:味甜, blcu:微苦;
+  blcu:药物成分 blcu:丹参, blcu:乌鸡, blcu:人参,
+    blcu:地黄, blcu:天冬, blcu:山药, blcu:川芎,
+    blcu:当归, blcu:桑螵蛸, blcu:熟地黄,
+    blcu:牡蛎, blcu:甘草, blcu:白芍, blcu:芡实,
+    blcu:蜂蜜, blcu:银柴胡, blcu:青蒿,
+    blcu:香附, blcu:鹿角, blcu:黄芪;
+  blcu:证候 blcu:气血两虚;
+  blcu:食物分组 blcu:寒凉, blcu:生冷, blcu:生冷食物,
+    blcu:荤腥油腻, blcu:辛辣 .
+
+blcu:1031 blcu:中药功效 blcu:健脾和胃, blcu:益气生血;
+  blcu:国药准字 blcu:Z10970031;
+  blcu:疾病 blcu:贫血;
+  blcu:症状 blcu:健忘, blcu:失眠, blcu:头晕,
+    blcu:心悸气短, blcu:神疲倦怠,
+    blcu:纳差, blcu:面色萎黄, blcu:食后腹胀;
+  blcu:药品 blcu:益中生血片;
+  blcu:药物成分 blcu:党参, blcu:大枣, blcu:山药,
+    blcu:绿矾, blcu:薏苡仁, blcu:陈皮;
+  blcu:证候 blcu:气血两虚, blcu:脾胃虚弱 .
+
+blcu:1032 blcu:中药功效 blcu:活血止血, blcu:消肿止痛,
+    blcu:祛瘀生新;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z20090676;
+  blcu:症状 blcu:子宫出血过多, blcu:子宫出血量多,
+    blcu:小腹疼痛, blcu:时间延长,
+    blcu:淋漓不止;
+  blcu:药品 blcu:茜芷片;
+  blcu:药物成分 blcu:三七, blcu:川牛膝, blcu:白芷,
+    blcu:茜草;
+  blcu:证候 blcu:气滞, blcu:血瘀 .
+
+blcu:1033 blcu:中药功效 blcu:养血补血, blcu:补虚润燥;
+  blcu:国药准字 blcu:Z37021419;
+  blcu:疾病 blcu:贫血;
+  blcu:症状 blcu:咳嗽, blcu:虚劳;
+  blcu:药品 blcu:山东阿胶膏;
+  blcu:药物成分 blcu:党参, blcu:枸杞子, blcu:甘草,
+    blcu:白术, blcu:白芍, blcu:阿胶, blcu:黄芪;
+  blcu:证候 blcu:气血不足 .
+
+blcu:1034 blcu:中药功效 blcu:散寒, blcu:止痛, blcu:补肾;
+  blcu:人群 blcu:儿童, blcu:过敏体质者;
+  blcu:国药准字 blcu:Z11021105;
+  blcu:症状 blcu:小便频数, blcu:小腹冷痛,
+    blcu:腰腿酸痛, blcu:阳痿遗精;
+  blcu:药品 blcu:加味青娥丸;
+  blcu:药物剂型 blcu:大蜜丸;
+  blcu:药物成分 blcu:乳香, blcu:巴戟天, blcu:杜仲,
+    blcu:核桃仁, blcu:没药, blcu:肉苁蓉,
+    blcu:蜂蜜, blcu:补骨脂;
+  blcu:证候 blcu:虚寒;
+  blcu:食物分组 blcu:忌生冷, blcu:油腻食物 .
+
+blcu:1035 blcu:中药功效 blcu:活血化瘀, blcu:清利湿热;
+  blcu:人群 blcu:孕妇, blcu:过敏体质;
+  blcu:国药准字 blcu:Z20060287;
+  blcu:疾病 blcu:带下清稀, blcu:盆腔炎,
+    blcu:脾虚大便溏;
+  blcu:症状 blcu:下腹疼痛, blcu:下腹隐痛,
+    blcu:带下量多;
+  blcu:药品 blcu:坤复康片;
+  blcu:药物剂型 blcu:薄膜衣片;
+  blcu:药物性味 blcu:味苦, blcu:气香;
+  blcu:药物成分 blcu:乌药, blcu:南刘寄奴, blcu:女贞子,
+    blcu:微晶纤维素, blcu:微粉硅胶,
+    blcu:淀粉, blcu:猪苓, blcu:硬脂酸镁,
+    blcu:粉萆解, blcu:糊精, blcu:苦参,
+    blcu:萹蓄, blcu:薄膜包衣预混剂,
+    blcu:赤芍, blcu:香附;
+  blcu:证候 blcu:气滞, blcu:湿热蕴结, blcu:血瘀;
+  blcu:食物分组 blcu:油腻食物, blcu:生冷, blcu:辛辣 .
+
+blcu:1036 blcu:中药功效 blcu:凉血止血, blcu:滋阴清热;
+  blcu:国药准字 blcu:Z10970080;
+  blcu:症状 blcu:不规则出血, blcu:子宫出血,
+    blcu:月经过多, blcu:经期延长;
+  blcu:药品 blcu:珍母口服液;
+  blcu:药物性味 blcu:味甜, blcu:气微腥;
+  blcu:药物成分 blcu:珍珠贝精卵液, blcu:蛋白糖 .
+
+blcu:1037 blcu:中药功效 blcu:健脾和胃, blcu:益气生血;
+  blcu:人群 blcu:儿童, blcu:哺乳期, blcu:孕妇,
+    blcu:成人, blcu:过敏体质者;
+  blcu:国药准字 blcu:Z10970125;
+  blcu:疾病 blcu:糖尿病, blcu:贫血, blcu:高血压;
+  blcu:症状 blcu:健忘, blcu:口干多饮, blcu:大便次数增多,
+    blcu:大便溏泻, blcu:失眠, blcu:头晕,
+    blcu:心悸气短, blcu:恶心, blcu:神疲倦怠,
+    blcu:纳差, blcu:肠鸣, blcu:胃脘部烧灼,
+    blcu:脉细弱, blcu:舌淡, blcu:轻度腹痛,
+    blcu:面色萎黄, blcu:食后腹胀,
+    blcu:齿痕;
+  blcu:药品 blcu:益中生血片;
+  blcu:药物成分 blcu:党参, blcu:大枣, blcu:山药,
+    blcu:绿矾, blcu:薏苡仁, blcu:陈皮;
+  blcu:证候 blcu:气血两虚, blcu:脾胃虚弱;
+  blcu:食物分组 blcu:油腻食物, blcu:生冷, blcu:辛辣 .
+
+blcu:1038 blcu:中药功效 blcu:健脾生血, blcu:补肾填精;
+  blcu:人群 blcu:儿童;
+  blcu:国药准字 blcu:Z20090848;
+  blcu:疾病 blcu:贫血;
+  blcu:症状 blcu:体乏无力, blcu:头昏眼花,
+    blcu:心悸气短, blcu:面色萎黄;
+  blcu:药品 blcu:益血生片;
+  blcu:药物成分 blcu:乳糖, blcu:党参, blcu:制何首乌,
+    blcu:大枣, blcu:大黄, blcu:山楂, blcu:当归,
+    blcu:微晶纤维素, blcu:熟地黄,
+    blcu:牛髓, blcu:白术, blcu:白芍, blcu:知母,
+    blcu:硬脂酸镁, blcu:紫河车, blcu:花生衣,
+    blcu:茯苓, blcu:阿胶, blcu:鸡内金,
+    blcu:鹿茸, blcu:鹿血, blcu:鹿角胶,
+    blcu:麦芽, blcu:黄芪, blcu:龟甲胶;
+  blcu:证候 blcu:脾肾两亏, blcu:血虚 .
+
+blcu:1039 blcu:中药功效 blcu:活血通经, blcu:祛瘀止痛;
+  blcu:人群 blcu:孕妇, blcu:过敏者;
+  blcu:国药准字 blcu:Z31020419;
+  blcu:症状 blcu:痛经, blcu:经闭, blcu:跌扑损伤,
+    blcu:风湿痹痛;
+  blcu:药品 blcu:复方当归注射液;
+  blcu:药物成分 blcu:当归川芎红花 .
+
+blcu:104 blcu:中药功效 blcu:疏肝解郁, blcu:调理冲任;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z10900019;
+  blcu:疾病 blcu:乳痛症, blcu:乳腺增生,
+    blcu:乳腺增生病;
+  blcu:药品 blcu:乳增宁片;
+  blcu:药物成分 blcu:天冬, blcu:柴胡, blcu:淫羊藿,
+    blcu:艾叶;
+  blcu:证候 blcu:冲任失调, blcu:气滞, blcu:肝郁 .
+
+blcu:1040 blcu:中药功效 blcu:补气养血, blcu:调经止带;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z12020049;
+  blcu:症状 blcu:产后虚弱, blcu:千后低烧,
+    blcu:大便溏泻, blcu:失眠, blcu:崩漏,
+    blcu:崩漏带下, blcu:带下病, blcu:形瘦虚赢,
+    blcu:月经不调, blcu:神倦体疲,
+    blcu:腰酸腿软, blcu:腹痛, blcu:面黄浮肿,
+    blcu:骨蒸潮热;
+  blcu:药品 blcu:安坤赞育丸;
+  blcu:药物成分 blcu:丹参, blcu:北沙参, blcu:地黄,
+    blcu:川牛膝, blcu:川芎, blcu:当归,
+    blcu:杜仲, blcu:枸杞子, blcu:柴胡,
+    blcu:沉香, blcu:琥珀, blcu:甘草, blcu:白术,
+    blcu:白芍, blcu:白薇, blcu:红花, blcu:艾叶,
+    blcu:茯苓, blcu:藁本, blcu:补骨脂,
+    blcu:赤石脂, blcu:阿胶, blcu:陈皮,
+    blcu:鳖甲, blcu:龟甲;
+  blcu:证候 blcu:气血两亏, blcu:瘀血, blcu:肝肾不足;
+  blcu:食物分组 blcu:生冷食物 .
+
+blcu:1041 blcu:中药功效 blcu:抑菌, blcu:抗炎, blcu:消肿止痛,
+    blcu:清热凉血, blcu:镇痛;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z42020643;
+  blcu:疾病 blcu:子宫内膜炎, blcu:盆腔炎,
+    blcu:附件炎;
+  blcu:症状 blcu:带下, blcu:腹痛;
+  blcu:药品 blcu:妇乐颗粒;
+  blcu:药物剂型 blcu:颗粒;
+  blcu:药物性味 blcu:味甜, blcu:微苦;
+  blcu:药物成分 blcu:大血藤, blcu:大青叶, blcu:大黄,
+    blcu:川楝子, blcu:延胡索, blcu:忍冬藤,
+    blcu:牡丹花, blcu:甘草, blcu:蒲公英,
+    blcu:赤芍;
+  blcu:证候 blcu:胃牌虚弱;
+  blcu:食物分组 blcu:生冷食物, blcu:辛辣 .
+
+blcu:1042 blcu:中药功效 blcu:止带下, blcu:清湿热;
+  blcu:国药准字 blcu:Z20090627;
+  blcu:疾病 blcu:宫颈糜烂, blcu:宫颈靡烂,
+    blcu:带下病, blcu:慢性宫颈炎,
+    blcu:湿热下注, blcu:赤白带下;
+  blcu:症状 blcu:出血;
+  blcu:药品 blcu:抗宫炎分散片;
+  blcu:药物成分 blcu:乌药干浸膏, blcu:广东紫珠干浸膏,
+    blcu:益母草干浸膏 .
+
+blcu:1043 blcu:中药功效 blcu:月经量少, blcu:活血调经,
+    blcu:腹痛;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:过敏体质者;
+  blcu:国药准字 blcu:Z20050784;
+  blcu:疾病 blcu:糖尿病, blcu:高血压;
+  blcu:症状 blcu:头晕, blcu:月经量少, blcu:疲乏无力,
+    blcu:经量少, blcu:色淡质稀, blcu:阴道出血;
+  blcu:药品 blcu:益母草软胶囊;
+  blcu:药物剂型 blcu:软胶囊;
+  blcu:药物性味 blcu:味苦, blcu:气微香;
+  blcu:药物成分 blcu:益母草, blcu:羟苯乙酯,
+    blcu:色拉油, blcu:蜂蜡;
+  blcu:证候 blcu:心悸, blcu:气血两虚;
+  blcu:食物分组 blcu:生冷食物 .
+
+blcu:1044 blcu:中药功效 blcu:健脾和胃, blcu:养血安神;
+  blcu:国药准字 blcu:Z19991066;
+  blcu:疾病 blcu:血虚证, blcu:贫血;
+  blcu:症状 blcu:上腹疼痛, blcu:便秘, blcu:倦怠乏力,
+    blcu:呕吐, blcu:大便不调, blcu:恶心,
+    blcu:烦躁多汗, blcu:脉细弱, blcu:脘腹胀闷,
+    blcu:舌胖色淡, blcu:苔薄白, blcu:轻度腹泻,
+    blcu:面色萎黄, blcu:食少纳呆;
+  blcu:药品 blcu:健脾生血片;
+  blcu:药物成分 blcu:党参, blcu:白术, blcu:硫酸亚铁,
+    blcu:茯苓, blcu:鸡内金;
+  blcu:证候 blcu:心脾两虚, blcu:脾胃虚弱 .
+
+blcu:1045 blcu:中药功效 blcu:去瘀止痛, blcu:活血调经;
+  blcu:国药准字 blcu:Z20050750;
+  blcu:症状 blcu:瘀血不净, blcu:腹痛;
+  blcu:药品 blcu:产后逐瘀胶囊;
+  blcu:药物剂型 blcu:胶囊剂 .
+
+blcu:1046 blcu:中药功效 blcu:补气血, blcu:补血健脑;
+  blcu:国药准字 blcu:Z20026094;
+  blcu:症状 blcu:健忘, blcu:头晕, blcu:心悸,
+    blcu:气短, blcu:焦虑, blcu:贫血;
+  blcu:药品 blcu:石榴补血糖浆;
+  blcu:药物成分 blcu:石榴, blcu:酸石榴 .
+
+blcu:1047 blcu:中药功效 blcu:化瘀, blcu:活血;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z20050080;
+  blcu:疾病 blcu:卵巢囊肿, blcu:子宫内膜异位症,
+    blcu:子宫肌瘤, blcu:盆腔炎;
+  blcu:症状 blcu:痛经, blcu:经闭, blcu:露不尽;
+  blcu:药品 blcu:桂枝茯苓片;
+  blcu:药物剂型 blcu:薄膜衣片;
+  blcu:药物性味 blcu:味微苦, blcu:气微香;
+  blcu:药物成分 blcu:桂枝, blcu:桃仁, blcu:牡丹皮,
+    blcu:白芍, blcu:茯苓;
+  blcu:证候 blcu:瘀血阻络 .
+
+blcu:1048 blcu:中药功效 blcu:祛瘀调经, blcu:补气养血;
+  blcu:人群 blcu:儿童, blcu:孕妇, blcu:过敏体质,
+    blcu:过敏者;
+  blcu:国药准字 blcu:Z20090837;
+  blcu:疾病 blcu:糖尿病;
+  blcu:症状 blcu:月经不调, blcu:经期后移,
+    blcu:经行不畅, blcu:量少;
+  blcu:药品 blcu:加味八珍益母胶囊;
+  blcu:药物剂型 blcu:稠膏;
+  blcu:药物性味 blcu:味苦, blcu:甜;
+  blcu:药物成分 blcu:丹参, blcu:人参, blcu:川芎,
+    blcu:当归, blcu:泽兰, blcu:熟地黄,
+    blcu:甘草, blcu:白术, blcu:益母草,
+    blcu:红花, blcu:茯苓, blcu:赤芍;
+  blcu:证候 blcu:气血不足;
+  blcu:食物分组 blcu:寒凉, blcu:生冷, blcu:萝卜 .
+
+blcu:1049 blcu:中药功效 blcu:活瘀止血, blcu:补益脾肾;
+  blcu:人群 blcu:儿童, blcu:过敏体质, blcu:过敏者;
+  blcu:国药准字 blcu:Z20013157;
+  blcu:疾病 blcu:糖尿病;
+  blcu:症状 blcu:月经过多;
+  blcu:药品 blcu:宫血停颗粒;
+  blcu:药物成分 blcu:党参, blcu:升麻, blcu:女贞子,
+    blcu:当归, blcu:旱莲草, blcu:枳壳,
+    blcu:牡蛎, blcu:益母草, blcu:糊精,
+    blcu:蒲黄, blcu:蔗糖, blcu:黄芪, blcu:龙骨;
+  blcu:证候 blcu:气虚血瘀, blcu:脾肾两虚;
+  blcu:食物分组 blcu:生冷, blcu:辛辣 .
+
+blcu:105 blcu:中药功效 blcu:抑制纤溶, blcu:抗炎,
+    blcu:镇痛;
+  blcu:人群 blcu:更年期妇女, blcu:过敏体质者,
+    blcu:过敏者, blcu:青春期少女;
+  blcu:国药准字 blcu:Z14020375;
+  blcu:疾病 blcu:感冒, blcu:慢性肠炎, blcu:糖尿病,
+    blcu:高血压;
+  blcu:症状 blcu:发热, blcu:子宫平滑肌收缩,
+    blcu:子宫收缩, blcu:宫寒不孕,
+    blcu:尿频, blcu:崩漏, blcu:带下, blcu:带多清稀,
+    blcu:月经不调, blcu:月经过少,
+    blcu:痛经, blcu:经期错后, blcu:经血量少,
+    blcu:胃痛, blcu:腰腹冷痛, blcu:阴道不规则出血;
+  blcu:药品 blcu:艾附暖宫丸;
+  blcu:药物剂型 blcu:水蜜丸;
+  blcu:药物性味 blcu:味甘而后苦, blcu:气微,
+    blcu:辛;
+  blcu:药物成分 blcu:吴茱萸, blcu:地黄, blcu:川芎,
+    blcu:当归, blcu:炙黄芪, blcu:白芍,
+    blcu:续断, blcu:肉桂, blcu:艾叶, blcu:香附;
+  blcu:证候 blcu:下焦虚寒, blcu:气滞, blcu:虚寒证,
+    blcu:血虚;
+  blcu:食物分组 blcu:生冷 .
+
+blcu:1050 blcu:中药功效 blcu:补血益气, blcu:调经养颜;
+  blcu:国药准字 blcu:Z20090597;
+  blcu:症状 blcu:暗斑, blcu:月经量少, blcu:痛经,
+    blcu:面色淡暗;
+  blcu:药品 blcu:调经养颜颗粒;
+  blcu:药物剂型 blcu:颗粒;
+  blcu:药物性味 blcu:味苦, blcu:微酸, blcu:涩;
+  blcu:药物成分 blcu:三七, blcu:地板藤, blcu:女贞子,
+    blcu:小红参, blcu:玉带草, blcu:黄芪 .
+
+blcu:1051 blcu:中药功效 blcu:止带, blcu:止带下, blcu:清湿热,
+    blcu:清热, blcu:除湿;
+  blcu:国药准字 blcu:Z14020655;
+  blcu:症状 blcu:带下量多, blcu:色黄有味,
+    blcu:赤白带下;
+  blcu:药品 blcu:白带丸;
+  blcu:药物成分 blcu:当归, blcu:椿皮, blcu:白芍,
+    blcu:香附, blcu:黄柏;
+  blcu:证候 blcu:湿热, blcu:湿热下注 .
+
+blcu:1052 blcu:中药功效 blcu:活血破瘀, blcu:消积化痰,
+    blcu:理气止痛, blcu:疏肝解郁,
+    blcu:补气健脾, blcu:软坚散结;
+  blcu:人群 blcu:孕妇;
+  blcu:国药准字 blcu:Z20060257;
+  blcu:疾病 blcu:乳腺增生;
+  blcu:药品 blcu:乳康丸;
+  blcu:药物剂型 blcu:浓缩丸;
+  blcu:药物性味 blcu:味苦, blcu:微辛, blcu:气香;
+  blcu:药物成分 blcu:三棱, blcu:丹参, blcu:乳香,
+    blcu:夏枯草, blcu:天冬, blcu:没药,
+    blcu:浙贝母, blcu:海藻, blcu:牡蛎,
+    blcu:玄参, blcu:瓜蒌, blcu:白术, blcu:莪术,
+    blcu:鸡内金, blcu:黄芪 .
+
+blcu:1053 blcu:中药功效 blcu:杀虫, blcu:清热燥湿;
+  blcu:国药准字 blcu:Z52020422;
+  blcu:疾病 blcu:宫颈糜烂, blcu:慢性宫颈炎,
+    blcu:阴道炎;
+  blcu:药品 blcu:妇得康泡沫剂;
+  blcu:药物剂型 blcu:乳状液;
+  blcu:药物成分 blcu:苦参总生物 .
+
