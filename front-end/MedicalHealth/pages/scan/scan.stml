@@ -91,17 +91,17 @@ export default {
 
         <view class="list_item list_two">
             <text >药品名称</text>
-		    <input class="search_int" autofocus type="text" placeholder="请输入药品名称，如“999感冒灵” " oninput="onInput1" value={name} onfocus="closeBar" onblur="openBar"></input>
+		    <input class="search_int"  placeholder="请输入药品名称，如“999感冒灵” " oninput="onInput1" value={name} onfocus="closeBar" onblur="openBar"></input>
 		</view>
 
         <view class="list_item list_two">
             <text >生产日期</text>
-		    <input class="search_int" autofocus type="text" placeholder="请输入生产日期，如“2000-1-1” " oninput="onInput2" value={dateOfManufacture} onfocus="closeBar" onblur="openBar"></input>
+		    <input class="search_int"  placeholder="请输入生产日期，如“2000-1-1” " oninput="onInput2" value={dateOfManufacture} onfocus="closeBar" onblur="openBar"></input>
 		</view>
 
         <view class="list_item list_two">
             <text >截止日期&nbsp;</text>
-		    <input class="search_int" autofocus type="text" placeholder="请输入截止日期，如“2000-1-1” " oninput="onInput3" value={qualityGuaranteePeriod} onfocus="closeBar" onblur="openBar"></input>
+		    <input class="search_int"  placeholder="请输入截止日期，如“2000-1-1” " oninput="onInput3" value={qualityGuaranteePeriod} onfocus="closeBar" onblur="openBar"></input>
 		</view>
 
         <view class="blank"></view>

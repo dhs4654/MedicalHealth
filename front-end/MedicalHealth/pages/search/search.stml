@@ -11,7 +11,7 @@
 		<view class="search_container">
 			<view class="search_box">
 				<image class="search_img" src="search.png"></image>
-				<input class="search_int" autofocus type="text" placeholder="请输入搜索内容" confirm-type="search" value={search_key} oninput="onInput" onconfirm="search" onfocus="closeBar" onblur="openBar"></input>
+				<input class="search_int"  placeholder="请输入搜索内容" confirm-type="search" value={search_key} oninput="onInput" onconfirm="search" onfocus="closeBar" onblur="openBar"></input>
 			</view>		
 			<text class="search_btn" onclick="cancel">取消</text>
 		</view>
@@ -29,7 +29,7 @@
             <scroll-view>
             <view><view v-for="item in drugsList.slice(0, 8)" >
                 <view class="recommendList" @click = "readDetail(item)">
-                    <image class="contentImg" src="999.png"></image>
+                    <image class="contentImg" src="dg.png"></image>
                     <text class="contentTxt" >{{item.name}}</text>
                 </view>
             </view></view>
@@ -41,7 +41,7 @@
             <scroll-view>
             <view><view v-for="item in qaList.slice(0, 8)" >
                 <view class="recommendList" @click = "readDetail(item)">
-                    <image class="contentImg" src="999.png"></image>
+                    <image class="contentImg" src="dg.png"></image>
                     <text class="contentTxt" >{{item.name}}</text>
                 </view>
             </view></view>
@@ -153,10 +153,13 @@
 			}
 		},
 		methods: {
+
 			apiready(){
-				api.setTabLayoutAttr({
-                    hideTabBar: false,
-                });
+                // api.setFocus({
+                //     inputId: 'test',
+                //     focus: true
+                // });
+				this.openBar();
 			},
 
             isMode1: function() {
@@ -171,9 +174,9 @@
                 // });
                 // location.reload();
                 // window.location.reload();
-                this.data.drugDetail = {};
-                this.data.drugsMsg = true;   
+                this.data.drugDetail = {}; 
                 this.data.drugsQA = false;
+                this.data.drugsMsg = true; 
                 this.data.search_key = '';
                 this.data.showResult = false;
                 // api.setTabLayoutAttr({
@@ -270,8 +273,8 @@
 			},
 
 			cancel(){
-				this.data.search_key = '';
                 this.data.showResult = false;
+				this.data.search_key = '';
                 this.data.drugDetail = {};
 			},
             readDetail(item) {
@@ -306,7 +309,7 @@
 .chooseMode {
     width: 100%;
 	height:70rpx;
-	background-color: #3db8a3;
+	background-color: #3b9ffd;
 	display: flex;
 	white-space: nowrap;
 	flex-direction: row;
@@ -317,7 +320,7 @@
 .mode_btn {
     height: 45px;
 	line-height: 45px;
-    background-color: #3db8a3;
+    background-color: #3b9ffd;
 	display: inline-block;
 }
 
@@ -325,7 +328,7 @@
 	font-size: 18px;
 	font-weight: 600;
 	margin-top: 3px;
-    border-right: 1px solid #3db8a3;
+    border-right: 1px solid #3b9ffd;
 	color: white;
 }
 
@@ -333,8 +336,8 @@
 	font-size: 20px;
 	font-weight: 600;
 	margin-top: 5px;
-	border-right: 1px solid #3db8a3;
-	color: rgb(24, 109, 236)
+	border-right: 1px solid #3b9ffd;
+	color: rgb(0, 54, 136)
 }
 
 /* search */
@@ -383,23 +386,29 @@
 
 .topic {
     font-size: 20px;
-    color: teal;
+    color: rgb(12, 96, 145);
     margin-bottom: 20px;
 }
 
 .contentTxt {
     font-size: 18px;
     color: black;
-    display: inline-block;
+    /* display: inline-block; */
+    width: 200px;
     text-align: left;
     margin-left: 10px;
 }
 
 .contentImg {
-    width: 100px;
+    /* width: 100px; */
+    height: 56px;
     margin-left: 3px;
     margin-right: 6px;
+    
 }
+/* .conImg {
+    height: 30px;
+} */
 
 .recommendList {
     margin-top: 15px;
