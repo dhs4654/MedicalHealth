@@ -1,5 +1,5 @@
 <template>
-    <view class="page">
+    <view class="page" >
 
         <view class="chooseMode">
             <text class="mode_btn" @click = "isMode1" :class="drugsMsg ? 'isIt' : 'isNot' ">药物信息</text>
@@ -11,7 +11,7 @@
 		<view class="search_container">
 			<view class="search_box">
 				<image class="search_img" src="search.png"></image>
-				<input class="search_int" autofocus type="text" placeholder="请输入搜索内容" confirm-type="search" value={search_key} oninput="onInput" onconfirm="search"></input>
+				<input class="search_int" autofocus type="text" placeholder="请输入搜索内容" confirm-type="search" value={search_key} oninput="onInput" onconfirm="search" onfocus="closeBar" onblur="openBar"></input>
 			</view>		
 			<text class="search_btn" onclick="cancel">取消</text>
 		</view>
@@ -26,33 +26,67 @@
 
         <view v-if="drugsMsg && search_key == '' && showResult == false " class="recommend">
             <text class="topic" decode = "{{true}}">&nbsp;&nbsp;推荐药物信息查询：</text>
-            <view v-for="item in drugsList.slice(0, 4)" >
+            <scroll-view>
+            <view><view v-for="item in drugsList.slice(0, 8)" >
                 <view class="recommendList" @click = "readDetail(item)">
                     <image class="contentImg" src="999.png"></image>
                     <text class="contentTxt" >{{item.name}}</text>
                 </view>
-            </view>
+            </view></view>
+            </scroll-view>
         </view>
 
         <view v-if="drugsQA && search_key == ''  && showResult == false " class="recommend">
             <text class="topic" decode = "{{true}}">&nbsp;&nbsp;热门问答：</text>
-            <view v-for="item in drugsList.slice(5, 8)" >
+            <scroll-view>
+            <view><view v-for="item in qaList.slice(0, 8)" >
                 <view class="recommendList" @click = "readDetail(item)">
                     <image class="contentImg" src="999.png"></image>
                     <text class="contentTxt" >{{item.name}}</text>
                 </view>
-            </view>
+            </view></view>
+            </scroll-view>
         </view>
 
         <!-- result of search -->
-        <view v-if="showResult == true">
-            <view class="res">
-                <image class="resImg" src="999.png"></image>
-                <text class="resTxt">价格： {drugDetail.price}</text>
-                <text class="resTxt">类型： {drugDetail.category}</text>
-            </view>
+        <view v-if="showResult == true && drugsMsg">
+            <scroll-view class="res">
+                <!-- <image class="resImg" src="999.png"></image> -->
+                <!-- <view class="resTxt">学名: {drugDetail.scientificName} </view>
+                <view class="resTxt">成分: {drugDetail.parts}</view>
+                <view class="resTxt">适用症: {drugDetail.forDisease}</view>
+                <view class="resTxt">用量用法: {drugDetail.usage}</view>
+                <view class="resTxt">不良反应: {drugDetail.untoward}</view>
+                <view class="resTxt">禁忌: {drugDetail.forbidden}</view>
+                <view class="resTxt">注意事项: {drugDetail.attention}</view>
+                <view class="resTxt">贮存方法: {drugDetail.storage}</view>
+                <view class="resTxt">推荐价格: {drugDetail.price}</view> -->
+                <view v-if="drugsMsg" class="resTxt">     <text class="resTitle">学名:      </text>        <text class="resContent">  {drugDetail.scientificName}           </text>     </view>
+                <view v-if="drugsMsg" class="resTxt">     <text class="resTitle">成分:      </text>        <text class="resContent">  {drugDetail.parts}                    </text>     </view>
+                <view v-if="drugsMsg" class="resTxt">     <text class="resTitle">适用症:    </text>        <text class="resContent">  {drugDetail.forDisease}               </text>     </view>
+                <view v-if="drugsMsg" class="resTxt">     <text class="resTitle">用量用法:  </text>        <text class="resContent">  {drugDetail.usage}                    </text>     </view>
+                <view v-if="drugsMsg" class="resTxt">     <text class="resTitle">不良反应:  </text>        <text class="resContent">  {drugDetail.untoward}                 </text>     </view>
+                <view v-if="drugsMsg" class="resTxt">     <text class="resTitle">禁忌:      </text>        <text class="resContent">  {drugDetail.forbidden}                </text>     </view>
+                <view v-if="drugsMsg" class="resTxt">     <text class="resTitle">注意事项:  </text>        <text class="resContent">  {drugDetail.attention}                </text>     </view>
+                <view v-if="drugsMsg" class="resTxt">     <text class="resTitle">贮存方法:  </text>        <text class="resContent">  {drugDetail.storage}                  </text>     </view>
+                <view v-if="drugsMsg" class="resTxt">     <text class="resTitle">推荐价格:  </text>        <text class="resContent">  {drugDetail.price}                    </text>     </view>
+            </scroll-view>
         </view>
 
+        <view v-if="showResult == true && drugsQA">
+            <scroll-view class="res">
+            <view class="resTxt">           <text class="resTitle">最佳回答：      </text>           <text class="qaContent">{drugDetail} </text>            </view>
+                <!-- <view class="resTxt">     <text class="resTitle">学名:      </text>        <text class="resContent">  {drugDetail.scientificName}           </text>     </view>
+                <view class="resTxt">     <text class="resTitle">成分:      </text>        <text class="resContent">  {drugDetail.parts}                    </text>     </view>
+                <view class="resTxt">     <text class="resTitle">适用症:    </text>        <text class="resContent">  {drugDetail.forDisease}               </text>     </view>
+                <view class="resTxt">     <text class="resTitle">用量用法:  </text>        <text class="resContent">  {drugDetail.usage}                    </text>     </view>
+                <view class="resTxt">     <text class="resTitle">不良反应:  </text>        <text class="resContent">  {drugDetail.untoward}                 </text>     </view>
+                <view class="resTxt">     <text class="resTitle">禁忌:      </text>        <text class="resContent">  {drugDetail.forbidden}                </text>     </view>
+                <view class="resTxt">     <text class="resTitle">注意事项:  </text>        <text class="resContent">  {drugDetail.attention}                </text>     </view>
+                <view class="resTxt">     <text class="resTitle">贮存方法:  </text>        <text class="resContent">  {drugDetail.storage}                  </text>     </view>
+                <view class="resTxt">     <text class="resTitle">推荐价格:  </text>        <text class="resContent">  {drugDetail.price}                    </text>     </view> -->
+            </scroll-view>
+        </view>
 
     </view>
 </template>
@@ -66,36 +100,49 @@
 			return{
 				search_key: '',
 				drugsList: [
-                    {name: '苹果',
-                    price: 25,
-                    category: "水果"
+                    {name: '阿莫西林',
                     }, {
-                    name: '香蕉',
-                    price: 15,
-                    category: "水果"
+                    name: '999感冒灵',
                     }, {
-                    name: '雪梨',
-                    price: 65,
-                    category: "水果"
+                    name: '西瓜霜',
                     }, {
-                    name: '宝马',
-                    price: 2500,
-                    category: "汽车"
+                    name: '布洛芬片',
                     }, {
-                    name: '奔驰',
-                    price: 10025,
-                    category: "汽车"
+                    name: '醋酸地塞米松片',
                     }, {
-                    name: '柑橘',
-                    price: 15,
-                    category: "水果"
+                    name: '人工牛黄胶囊',
                     }, {
-                    name: '奥迪',
-                    price: 25,
-                    category: "汽车"
+                    name: '维生素B2片',
                     }
                 ],
-                drugDetail: {},
+                qaList: [
+                    {name: '乌鸡白凤丸的药物成分有哪些？',
+                    }, {
+                    name: '儿童不能吃哪些药？',
+                    }, {
+                    name: '哪些药可以治月经不调？',
+                    }, {
+                    name: '哪些药是含有水泥的？',
+                    }, {
+                    name: '乌鸡白凤丸含有凤凰吗？',
+                    }, {
+                    name: '哪些症状可以吃乌鸡白凤丸',
+                    }, {
+                    name: '旋转陀螺丸的药物成分有哪些？',
+                    }
+                ],
+                drugDetail: {
+                    // scientificName: '',
+                    // parts: '',       
+                    // forDisease: '',   
+                    // usage: '',          
+                    // untoward: '',       
+                    // forbidden: '',     
+                    // attention: '',     
+                    // storage: '',       
+                    // price: '',          
+                },
+
 				page: 1,
 				haveMore: true,
 				loading: false,
@@ -107,38 +154,121 @@
 		},
 		methods: {
 			apiready(){
-				
+				api.setTabLayoutAttr({
+                    hideTabBar: false,
+                });
 			},
 
-            isMode1() {
+            isMode1: function() {
+                this.cancel();
+                // api.openWin({
+                //     // name: 'page1',
+                //     // url: './page1.html',
+                //     // pageParam: {
+                //     //     name: 'test'
+                //     // }
+                //     reload: true,
+                // });
+                // location.reload();
+                // window.location.reload();
+                this.data.drugDetail = {};
                 this.data.drugsMsg = true;   
                 this.data.drugsQA = false;
                 this.data.search_key = '';
                 this.data.showResult = false;
-                this.data.drugDetail = {};
+                // api.setTabLayoutAttr({
+                //     hideTabBar: false,
+                // });
             },
 
-            isMode2() {
+            isMode2: function() {
+                this.cancel();
+                // api.openWin({
+                //     // name: 'page1',
+                //     // url: './page1.html',
+                //     // pageParam: {
+                //     //     name: 'test'
+                //     // }
+                //     reload: true,
+                // });
+                this.data.drugDetail = {};
                 this.data.drugsMsg = false;   
                 this.data.drugsQA = true;
                 this.data.search_key = '';
                 this.data.showResult = false;
-                this.data.drugDetail = {};
+                // api.setTabLayoutAttr({
+                //     hideTabBar: false,
+                // });
             },
 
 			onInput(e){
 				this.data.search_key = e.detail.value;
+                
 			},
 
-			search(e){
+            closeBar(e) {
+                api.setTabLayoutAttr({
+                    hideTabBar: true,
+                });
+            },
+
+            openBar(e) {
+                api.setTabLayoutAttr({
+                    hideTabBar: false,
+                });
+            },
+            search(e){
 				let key = this.data.search_key;
+                let that = this;
+                if(key){
+                     api.ajax({
+                        url: that.data.drugsMsg? 'http://124.222.44.207:5000/search/info' : 'http://124.222.44.207:5000/query/question',
+                        method: 'get',
+                        dataType:'json',   
+                        data: {
+                            values: { 
+                                info: key,
+                                question: key,
+                            } //键值对
+                        }
+                    }, function (ret, err) {
+                        if (ret) {
+                            // api.alert({
+                            //     // msg: JSON.stringify(ret)
+                            //     // msg: "搜索成功"
+                            //     msg: ret
+                            //     // msg: ret.data[0]
+                            // });
+                            if (that.data.drugsMsg) that.data.drugDetail = ret.data[0];
+                            if (that.data.drugsQA) {
+                                that.data.drugDetail = ret.content;
+                                if (typeof(ret.content) != 'string') {
+                                    if ('allObj' in ret.content) {
+                                        that.data.drugDetail = ret.content.allObj.join(',   ');
+                                        // const parts = [];
+                                        // for(let i = 0; i < ret.content.allObj.length; i += 3){
+                                        //   parts.push(ret.content.allObj.slice(i, i + 3).join(' '));
+                                        // }
+                                        // that.data.drugDetail = parts.join('\n')
+                                    }
+                                    else if ('names' in ret.content) that.data.drugDetail = ret.content.names.join(',   ');
+                                }
+                            }
+                            that.data.showResult = true;
+                        } else {
+                            api.alert({ msg: JSON.stringify(err) });
+                        };
+                    });
+                } else{
+                    api.alert({
+                        msg: "未输入信息！"
+                    });
+                }
                 // api.alert({msg:key});
-				if (key) {
-					this.getData(key);
-				} else {
-					this.data.drugDetail = [];
-				}
+               
+				
 			},
+
 			cancel(){
 				this.data.search_key = '';
                 this.data.showResult = false;
@@ -146,29 +276,31 @@
 			},
             readDetail(item) {
                 this.data.search_key = item.name;
-                this.data.showResult = true;
-                this.data.drugDetail = item;
+                this.search();
+                // this.data.showResult = true;
+                // this.data.drugDetail = item;
                 // api.alert({msg: item.price});
             },
-			getData(key){
-				// let that = this;
-                // api.alert({msg:key});
-                for (let item of this.data.drugsList) {
-                    // api.alert({msg:item.price});
-                    if (item.name == key) {
-                        this.data.drugDetail = item;
-                        this.data.showResult = true;
-                        return ;
-                    }
-                }
-			}
+			// getData(key){
+			// 	// let that = this;
+            //     // api.alert({msg:key});
+            //     for (let item of this.data.drugsList) {
+            //         // api.alert({msg:item.price});
+            //         if (item.name == key) {
+            //             this.data.drugDetail = item;
+            //             this.data.showResult = true;
+            //             return ;
+            //         }
+            //     }
+			// }
 		}
 	}
 </script>
 <style>
 .page {
 	height: 100%;
-	background-color: #f8f8f8;
+	background-color: white;
+    background-size: 100% 100%;
 }
 /* modechoose */
 .chooseMode {
@@ -202,7 +334,7 @@
 	font-weight: 600;
 	margin-top: 5px;
 	border-right: 1px solid #3db8a3;
-	color: blue
+	color: rgb(24, 109, 236)
 }
 
 /* search */
@@ -270,7 +402,7 @@
 }
 
 .recommendList {
-    margin-top: 20px;
+    margin-top: 15px;
     margin-left: 10px;
     text-align: left;
     display: flex;
@@ -287,6 +419,26 @@
     font-size: 18px;
     color: black;
     margin-top: 10px;
+	background-color: white;
+	padding: 0 15px 10px;
+}
+
+.resTitle {
+    /* color: rgb(14, 200, 233); */
+    color: teal;
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+.resContent {
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 15px;
+}
+.qaContent {
+    font-size: 18px;
+    margin-left: 5px;
+    margin-top: 3px;
+    /* color: rgb(181, 241, 15); */
 }
 /* list */
 .scroll-view{

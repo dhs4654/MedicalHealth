@@ -1,12 +1,10 @@
-<template>
-
+<!-- <template>
 <view class="content">
     <view class="scanIcon">
         <image src="R-C.png" @click="getMsg" />
         <text class="wordMsg">扫一扫获取药物具体信息</text> 
     </view>
 </view>
-
 </template>
 
 
@@ -41,11 +39,15 @@ export default {
                         api.confirm({
                             title: '药品信息如下，是否加入药库',
                             msg:that.content,
-                            buttons:['确认','取消'],
+                            buttons:['用户药库', '家人药库','取消'],
                         }, function(ret2, arr2) {
                             if(ret2.buttonIndex == 1) {
                                 that.data.drugsList.push(that.content);
-                                api.alert({msg:'成功加入药库'});
+                                api.alert({msg:'成功加入用户药库'});
+                                // api.alert({msg:that.data.drugsList});
+                            } else if(ret2.buttonIndex == 2) {
+                                that.data.drugsList.push(that.content);
+                                api.alert({msg:'成功家人药库'});
                                 // api.alert({msg:that.data.drugsList});
                             }
                         })
@@ -78,5 +80,220 @@ export default {
         font-weight: bold;
 	    color: #333;
     }
-</style>
+</style> -->
 
+<template>
+
+    <scroll-view class="page">
+        <view>
+            <image class="avatar" src="add.jpg" mode="aspectFill"></image>
+        </view>
+
+        <view class="list_item list_two">
+            <text >药品名称</text>
+		    <input class="search_int" autofocus type="text" placeholder="请输入药品名称，如“999感冒灵” " oninput="onInput1" value={name} onfocus="closeBar" onblur="openBar"></input>
+		</view>
+
+        <view class="list_item list_two">
+            <text >生产日期</text>
+		    <input class="search_int" autofocus type="text" placeholder="请输入生产日期，如“2000-1-1” " oninput="onInput2" value={dateOfManufacture} onfocus="closeBar" onblur="openBar"></input>
+		</view>
+
+        <view class="list_item list_two">
+            <text >截止日期&nbsp;</text>
+		    <input class="search_int" autofocus type="text" placeholder="请输入截止日期，如“2000-1-1” " oninput="onInput3" value={qualityGuaranteePeriod} onfocus="closeBar" onblur="openBar"></input>
+		</view>
+
+        <view class="blank"></view>
+
+		<text class="btn" @click="addToUsr">加入个人药库</text>
+        <text class="btn" @click="addToRelatives">加入亲属药库</text>
+
+    </scroll-view>
+</template>
+<script>
+export default {
+	data() {
+		return{
+			name: '桂林西瓜霜',
+            dateOfManufacture: '2001-1-1',
+            qualityGuaranteePeriod: '2100-1-1',
+		}
+	},
+	methods: {
+		apiready(){
+			this.clear();
+            this.openBar();
+		},
+        onInput1(e){
+			this.data.name = e.detail.value;        
+		},
+        onInput2(e){
+			this.data.dateOfManufacture = e.detail.value;        
+		},
+        onInput3(e){
+			this.data.qualityGuaranteePeriod = e.detail.value;        
+		},
+        clear(e) {
+            this.data.name = '';
+            this.data.dateOfManufacture = '';
+            this.data.qualityGuaranteePeriod = '';
+        },
+        addToUsr() {
+            let that = this;
+            if (this.data.name == '' || this.data.dateOfManufacture == '' || this.data.qualityGuaranteePeriod == '') {
+                api.alert({msg:'请输入药品信息！'});
+            } else {
+                api.confirm({
+                    title: '是否加入个人药库',
+                    buttons:['确定','取消'],
+                }, function(ret2, arr2) {
+                    if(ret2.buttonIndex == 1) {
+                        that.addToDatabase(1);
+                        // api.alert({msg:'成功加入个人药库'});
+                        // api.alert({msg:that.data.drugsList});
+                    } 
+                });
+            }
+        },
+        addToRelatives() {
+            let that = this;
+            if (this.data.name == '' || this.data.dateOfManufacture == '' || this.data.qualityGuaranteePeriod == '') {
+                api.alert({msg:'请输入药品信息！'});
+            } else {
+                api.confirm({
+                    title: '是否加入亲属药库',
+                    buttons:['确定','取消'],
+                }, function(ret2, arr2) {
+                    if(ret2.buttonIndex == 1) {
+                        that.addToDatabase(2);
+                        // api.alert({msg:'成功加入个人药库'});
+                        // api.alert({msg:that.data.drugsList});
+                    } 
+                });
+            }
+        },
+        addToDatabase(type) {
+            let that = this;
+            api.ajax({
+                url:'http://124.222.44.207:5000/drugLibrary/drugs',
+                method: 'post',
+                headers: {
+					"Content-Type": "application/json;charset=utf-8",
+				},
+                dataType: 'json',
+                data: {
+                    body: {
+                    'name': that.data.name,
+                    'desc': '0',
+                    'manufacturedate': that.data.dateOfManufacture,
+                    'duedate': that.data.qualityGuaranteePeriod,
+                    'owner': type,
+                    'img': '0',
+                    'clockFlags': '0000',
+                    'clockTime': '0000000000000000',
+                    'weekFrequency': '0000000',
+                    'telephone': '0',
+                    }
+                },
+                
+            }, function(ret, err){
+                    if (ret['code'] == 200) {
+                        if (type == 1) api.alert({msg:'成功加入个人药库'});
+                        if (type == 2) api.alert({msg:'成功加入亲属药库'});
+                        that.clear();
+                    } 
+                    // if (ret) {
+                    //     api.alert(ret);
+                    // } else {
+                    //     api.alert(err);
+                    // }
+            });
+        },
+        closeBar(e) {
+            api.setTabLayoutAttr({
+                hideTabBar: true,
+            });
+        },
+
+        openBar(e) {
+            api.setTabLayoutAttr({
+                hideTabBar: false,
+            });
+        },
+    }
+}
+</script>
+<style>
+.page {
+	height: 100%;
+	padding: 0 15px;
+	background-color: whitesmoke;
+    /* margin-top:200px; */
+}
+.list_item{
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid #f8f8f8;
+}
+.list_one{
+	height: 90px;
+}
+.list_zi{
+    font-size: 16px;
+	color: #333333;
+    width: 18px;
+    height: 18px;
+    margin-left: 13px;
+    margin-right: 6px;
+    /* margin-bottom: 6px; */
+}
+.avatar{
+    width: 200px;
+    height: 200px;
+    margin-left: 60px;
+    margin-right: 50px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-radius: 50%;
+}
+.list_szi{
+    font-size: 16px;
+	color: #777777;
+}
+.list_two{
+	height: 44px;
+    margin-bottom: 6px;
+    margin-top: 0px;
+}
+.btn{
+    height: 45px;
+    border-radius: 4px;
+	font-weight: bold;
+	/* margin: 40px 15px 15px; */
+    margin-top: 20px;
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 10px;
+    text-align: center;
+    line-height: 45px;
+    font-size: 16px;
+	background-color: #339DFF;
+	color: white;
+}
+.btn:active{
+	opacity: 0.7;
+}
+.search_int{
+	flex: 1;
+	font-size: 16px;
+	color: #333;
+	background-color: transparent;
+	border: none;
+    margin-left: 10px;
+}
+.blank {
+    margin-top: 50px;
+}
+</style>
