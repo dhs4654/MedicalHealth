@@ -951,7 +951,14 @@
 	};
 	apivm.define("hoc-nav-bar-sgm", HocNavBarSgm);
 
+	global.vm = null;
+
 	global.apiready = function() {
+		api.setFrameAttr({
+			name: "personal",
+			hidden: true
+		});
+
 		var header = $api.dom("header");
 		var footer = $api.dom("footer");
 		var headerH = $api.fixStatusBar(header);
@@ -960,15 +967,43 @@
 			style: "dark"
 		});
 	};
+	api.addEventListener(
+		{
+			name: "tabframe"
+		},
+		function(ret, err) {
+			if (ret.name == api.frameName) {
+				api.setFrameAttr({
+					name: "personal",
+					hidden: true
+				});
+
+				var a = api.getPrefs({
+					sync: true,
+					key: "id"
+				});
+
+				if (a == "") {
+					api.alert({msg: "您还未登录，请先登录"});
+				} else {
+					vm.reinitData(a);
+				}
+			}
+		}
+	);
 	var Page = /*@__PURE__*/ (function(Component) {
 		function Page(props) {
 			Component.call(this, props);
 			this.data = {
+				usrid: "",
+				identity: "",
+				tel: "",
+				bindtel: "",
 				year: [],
 				month: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
 				day: [],
 				yearNow: new Date().getFullYear(),
-				dateMltiSelectorValue: [0, 0, 0],
+				dateMltiSelectorValue: [10, 0, 0],
 				selectYear: new Date().getFullYear(),
 				selectMoth: new Date().getMonth() + 1,
 				selectDay: new Date().getDate(),
@@ -995,7 +1030,7 @@
 				moveX: 0, //滑动时的位置
 				disX: 0, //移动距离
 				handleSwipe: "transform:translateX(0px)", //滑动时的效果,动态绑定
-				delBtnWidth: 50, //删除按钮宽度单位（px）
+				delBtnWidth: 55, //删除按钮宽度单位（px）
 				currentid: ""
 			};
 		}
@@ -1004,10 +1039,20 @@
 		Page.prototype = Object.create(Component && Component.prototype);
 		Page.prototype.constructor = Page;
 		Page.prototype.installed = function() {
-			//获取当前时间
-			this.getYears();
-			this.initTime();
-			this.initData();
+			vm = this;
+			this.telinit();
+		};
+		Page.prototype.telinit = function() {
+			var a = api.getPrefs({
+				sync: true,
+				key: "id"
+			});
+
+			if (a == "") {
+				api.alert({msg: "您还未登录，请先登录"});
+			} else {
+				this.data.usrid = a;
+			}
 		};
 		Page.prototype.getYears = function() {
 			this.data.year = []; //一个页面多次使用的情况 必须先清空 否则会出现各种问题
@@ -1049,11 +1094,14 @@
 			var this$1 = this;
 
 			//异步请求
-			var request = function(url, params, method) {
+			this.data.totaldataList = [];
+			this.data.current = 0;
+			//根据用户id获取用户信息
+			var requestusr = function(url, params, method) {
 				return new Promise(function(resolve, reject) {
 					api.ajax(
 						{
-							url: "http://124.222.44.207:5000/drugLibrary/drugs",
+							url: "http://124.222.44.207:5000/userLibrary/users/" + this$1.data.usrid,
 							method: "get"
 						},
 						function(ret, err) {
@@ -1073,12 +1121,56 @@
 					);
 				});
 			};
-			request().then(function(res) {
+			requestusr().then(function(res) {
+				if (res.data) {
+					this$1.data.identity = res.data.identity == "client" ? 2 : 1;
+					this$1.data.tel = res.data.telephone;
+					if (this$1.data.identity == 1 && res.data.bindTelephone != "") {
+						this$1.data.bindtel = res.data.bindTelephone;
+					}
+				} else {
+					api.alert({
+						title: "首页请求用户数据提示",
+						msg: res.reject
+					});
+				}
+			});
+			//获取该用户的药库
+			var requestmedi1 = function(url, params, method) {
+				return new Promise(function(resolve, reject) {
+					api.ajax(
+						{
+							url:
+								"http://124.222.44.207:5000/drugLibrary/getByTelephone/" +
+								this$1.data.tel,
+							method: "get"
+						},
+						function(ret, err) {
+							if (ret) {
+								resolve(ret);
+							} else {
+								reject(
+									"错误码：" +
+										err.code +
+										"；错误信息：" +
+										err.msg +
+										"网络状态码：" +
+										err.statusCode
+								);
+							}
+						}
+					);
+				});
+			};
+			requestmedi1().then(function(res) {
 				if (res.data) {
 					this$1.data.totaldataList = res.data;
 					this$1.data.totaldataList.sort(this$1.dateorder);
 					//初始化设定当前药库列表展示（默认全部）
 					this$1.data.dataList = this$1.data.totaldataList;
+					if (this$1.data.identity == 1 && this$1.data.bindtel == "") {
+						this$1.setalert();
+					}
 				} else {
 					api.alert({
 						title: "首页请求数据提示",
@@ -1086,6 +1178,55 @@
 					});
 				}
 			});
+			//根据绑定手机号获取绑定用户的药库
+			if (this.data.identity == 1 && this.data.bindtel != "") {
+				var requestmedi2 = function(url, params, method) {
+					return new Promise(function(resolve, reject) {
+						api.ajax(
+							{
+								url:
+									"http://124.222.44.207:5000/drugLibrary/getByTelephone/" +
+									this$1.data.bindtel,
+								method: "get"
+							},
+							function(ret, err) {
+								if (ret) {
+									resolve(ret);
+								} else {
+									reject(
+										"错误码：" +
+											err.code +
+											"；错误信息：" +
+											err.msg +
+											"网络状态码：" +
+											err.statusCode
+									);
+								}
+							}
+						);
+					});
+				};
+				requestmedi2().then(function(res) {
+					if (res.data) {
+						this$1.data.totaldataList = this$1.data.totaldataList.concat(res.data);
+						this$1.data.totaldataList.sort(this$1.dateorder);
+						//初始化设定当前药库列表展示（默认全部）
+						this$1.data.dataList = this$1.data.totaldataList;
+						this$1.setalert();
+					} else {
+						api.alert({
+							title: "首页请求数据提示",
+							msg: res.reject
+						});
+					}
+				});
+			}
+		};
+		Page.prototype.reinitData = function(a) {
+			this.data.usrid = a;
+			this.getYears();
+			this.initTime();
+			this.initData();
 		};
 		Page.prototype.dateorder = function(a, b) {
 			var obj1 = a.duedate;
@@ -1093,6 +1234,25 @@
 			var val1 = Math.floor(new Date(obj1).getTime() / 1000);
 			var val2 = Math.floor(new Date(obj2).getTime() / 1000);
 			return val1 - val2;
+		};
+		Page.prototype.setalert = function() {
+			var len = this.data.totaldataList.length;
+			var i = 0;
+			for (; i < len; i++) {
+				if (this.data.totaldataList[i].duedate < this.data.datenow) {
+					var contentidentity =
+						this.data.totaldataList[i].owner == 1 ? "您的药物【" : "您家人的药物【";
+					api.notification({
+						notify: {
+							title: "药物过期通知！",
+							content:
+								contentidentity +
+								this.data.totaldataList[i].name +
+								"】已过期，请及时清理！"
+						}
+					});
+				}
+			}
 		};
 		Page.prototype.setDays = function() {
 			this.data.day = [];
@@ -1150,17 +1310,25 @@
 		Page.prototype.tabClick = function(item, index) {
 			this.data.current = index;
 			this.data.dataList = [];
-			var arraypro = []; //全部
+			var arraypro1 = []; //自己
+			var arraypro2 = []; //家人
 			if (index == 0) {
 				this.data.dataList = this.data.totaldataList;
 			} else {
-				//自己/亲人
 				for (var i = 0; i < this.data.totaldataList.length; i++) {
-					if (this.data.totaldataList[i].owner == index) {
-						arraypro.push(this.data.totaldataList[i]);
+					//自己
+					if (this.data.totaldataList[i].telephone == this.data.tel) {
+						arraypro1.push(this.data.totaldataList[i]);
+					}
+					if (this.data.totaldataList[i].telephone == this.data.bindtel) {
+						arraypro2.push(this.data.totaldataList[i]);
 					}
 				}
-				this.data.dataList = arraypro;
+				if (index == 1) {
+					this.data.dataList = arraypro1;
+				} else {
+					this.data.dataList = arraypro2;
+				}
 			}
 			this.resumetouch();
 		};
@@ -1293,142 +1461,180 @@
 				"safe-area",
 				{class: "view_1"},
 				apivm.h("hoc-nav-bar-sgm", {title: "我的药库"}),
-				apivm.h(
-					"view",
-					{class: "a-tabs"},
-					(Array.isArray(this.data.TabList)
-						? this.data.TabList
-						: Object.values(this.data.TabList)
-					).map(function(item$1, index$1) {
-						return apivm.h(
+				this.data.tel
+					? apivm.h(
 							"view",
-							{
-								class: "a-tab-item",
-								onClick: function() {
-									return this$1.tabClick(item$1, index$1);
-								}
-							},
+							null,
 							apivm.h(
-								"text",
-								{
-									class:
-										"a-tab-item-text  " +
-										(this$1.data.current === index$1 ? "a-tab-item-text-active" : "")
-								},
-								item$1.name
-							),
-							this$1.data.current === index$1
-								? apivm.h("text", {class: "a-tab-item-line"})
-								: null
-						);
-					})
-				),
-				apivm.h(
-					"scroll-view",
-					{class: "view_2", "scroll-y": "true", style: "height v-bind:auto"},
-					(Array.isArray(this.data.dataList)
-						? this.data.dataList
-						: Object.values(this.data.dataList)
-					).map(function(item$1, index$1) {
-						return apivm.h(
-							"view",
-							{key: item$1.id},
-							this$1.data.dataList.length != 0
-								? apivm.h(
-										"view",
-										null,
-										apivm.h(
-											"div",
-											{class: "list"},
-											apivm.h(
-												"view",
-												{
-													class: "list",
-													ontouchstart: function(event) {
-														if (this$1.touchStart) {
-															this$1.touchStart(event);
-														} else {
-															touchStart(event);
-														}
-													},
-													ontouchmove: function(event) {
-														if (this$1.touchMove) {
-															this$1.touchMove(event);
-														} else {
-															touchMove(event);
-														}
-													},
-													ontouchend: function(event) {
-														if (this$1.touchEnd) {
-															this$1.touchEnd(event);
-														} else {
-															touchEnd(event);
-														}
-													},
-													id: item$1.id,
-													style:
-														this$1.data.currentid == item$1.id
-															? this$1.data.handleSwipe
-															: "transform:translateX(0px)"
-												},
-												apivm.h("image", {
-													class: "image",
-													src: item$1.image,
-													mode: "topleft"
-												}),
-												apivm.h(
-													"view",
-													{class: "information"},
-													apivm.h("text", {class: "name"}, item$1.name),
-													apivm.h("text", {class: "date"}, item$1.manufacturedate),
-													apivm.h("text", {class: "date"}, item$1.duedate)
-												),
-												apivm.h(
-													"view",
-													{class: "detail", id2: index$1},
-													apivm.h(
-														"button",
-														{
-															onclick: function(event) {
-																if (this$1.myopen) {
-																	this$1.myopen(event);
-																} else {
-																	myopen(event);
-																}
-															},
-															id2: index$1
-														},
-														"详细信息"
-													)
-												)
-											),
-											apivm.h(
-												"div",
-												{
-													class: "delete",
-													onClick: function() {
-														return this$1.deleteItem(index$1, item$1.id);
-													},
-													style:
-														this$1.data.currentid == item$1.id
-															? this$1.data.handleSwipe
-															: "transform:translateX(0px)"
-												},
-												apivm.h("text", null, "删除")
-											)
-										)
-								  )
-								: null
-						);
-					}),
-					this.data.dataList.length === 0
-						? apivm.h(
 								"view",
-								null,
-								apivm.h("text", {class: "typebox"}, "这一天您没有过期的药物哦")
-						  )
-						: null
-				)
+								{style: {display: this.data.identity == 1 ? "flex" : "none"}},
+								apivm.h(
+									"view",
+									{class: "a-tabs"},
+									(Array.isArray(this.data.TabList)
+										? this.data.TabList
+										: Object.values(this.data.TabList)
+									).map(function(item$1, index$1) {
+										return apivm.h(
+											"view",
+											{
+												class: "a-tab-item",
+												onClick: function() {
+													return this$1.tabClick(item$1, index$1);
+												}
+											},
+											apivm.h(
+												"text",
+												{
+													class:
+														"a-tab-item-text  " +
+														(this$1.data.current === index$1 ? "a-tab-item-text-active" : "")
+												},
+												item$1.name
+											),
+											this$1.data.current === index$1
+												? apivm.h("text", {class: "a-tab-item-line"})
+												: null
+										);
+									})
+								)
+							),
+							apivm.h(
+								"view",
+								{class: "containere", style: "height:auto"},
+								apivm.h(
+									"picker",
+									{
+										name: "date-picker",
+										class: "date-picker_contaner",
+										mode: "multiSelector",
+										range: this.data.dateList,
+										value: this.data.dateMltiSelectorValue,
+										onchange: this.dateMultiSelectorChange,
+										oncolumnchange: this.dateMultiSelectorColumnChange
+									},
+									apivm.h(
+										"text",
+										{class: "date-picker_label"},
+										this.data.label,
+										":",
+										this.data.datenow
+									)
+								)
+							),
+							apivm.h(
+								"scroll-view",
+								{class: "view_2", "scroll-y": "true", style: "height v-bind:auto"},
+								(Array.isArray(this.data.dataList)
+									? this.data.dataList
+									: Object.values(this.data.dataList)
+								).map(function(item$1, index$1) {
+									return apivm.h(
+										"view",
+										{key: item$1.id},
+										this$1.data.dataList.length != 0
+											? apivm.h(
+													"view",
+													null,
+													apivm.h(
+														"div",
+														{class: "list"},
+														apivm.h(
+															"view",
+															{
+																class: "list",
+																ontouchstart: function(event) {
+																	if (this$1.touchStart) {
+																		this$1.touchStart(event);
+																	} else {
+																		touchStart(event);
+																	}
+																},
+																ontouchmove: function(event) {
+																	if (this$1.touchMove) {
+																		this$1.touchMove(event);
+																	} else {
+																		touchMove(event);
+																	}
+																},
+																ontouchend: function(event) {
+																	if (this$1.touchEnd) {
+																		this$1.touchEnd(event);
+																	} else {
+																		touchEnd(event);
+																	}
+																},
+																id: item$1.id,
+																style:
+																	this$1.data.currentid == item$1.id
+																		? this$1.data.handleSwipe
+																		: "transform:translateX(0px)"
+															},
+															apivm.h("image", {
+																class: "image",
+																src: item$1.img,
+																mode: "topleft"
+															}),
+															apivm.h(
+																"view",
+																{class: "information"},
+																this$1.data.datenow <= item$1.duedate
+																	? apivm.h("text", {class: "nameblack"}, item$1.name)
+																	: null,
+																this$1.data.datenow > item$1.duedate
+																	? apivm.h("text", {class: "namered"}, item$1.name, "(已过期）")
+																	: null,
+																apivm.h("text", {class: "date"}, item$1.manufacturedate),
+																apivm.h("text", {class: "date"}, item$1.duedate)
+															),
+															apivm.h(
+																"view",
+																{class: "detail", id2: index$1},
+																apivm.h(
+																	"button",
+																	{
+																		onclick: function(event) {
+																			if (this$1.myopen) {
+																				this$1.myopen(event);
+																			} else {
+																				myopen(event);
+																			}
+																		},
+																		id2: index$1
+																	},
+																	"详细信息"
+																)
+															)
+														),
+														apivm.h(
+															"div",
+															{
+																class: "delete",
+																onClick: function() {
+																	return this$1.deleteItem(index$1, item$1.id);
+																},
+																style:
+																	this$1.data.currentid == item$1.id
+																		? this$1.data.handleSwipe
+																		: "transform:translateX(0px)"
+															},
+															apivm.h("text", {class: "deleteword"}, "删除")
+														)
+													)
+											  )
+											: null
+									);
+								}),
+								this.data.dataList.length === 0
+									? apivm.h(
+											"view",
+											null,
+											apivm.h("text", {class: "typebox"}, "这一天您没有过期的药物哦")
+									  )
+									: null
+							)
+					  )
+					: null
 			);
 		};
 
@@ -1490,7 +1696,7 @@
 		".date-picker_label": {fontSize: "18px"},
 		".view_2": {
 			width: "100%",
-			borderRadius: "30rpx",
+			borderRadius: "10rpx",
 			display: "flex",
 			flexDirection: "column",
 			boxSizing: "border-box",
@@ -1515,11 +1721,18 @@
 			flexDirection: "column",
 			color: "darkred"
 		},
-		".name": {
+		".nameblack": {
 			width: "150px",
 			fontSize: "17rpx",
 			wordBreak: "break-all",
 			color: "black",
+			marginLeft: "30px"
+		},
+		".namered": {
+			width: "150px",
+			fontSize: "17rpx",
+			wordBreak: "break-all",
+			color: "red",
 			marginLeft: "30px"
 		},
 		".date": {
@@ -1537,11 +1750,12 @@
 			position: "absolute",
 			display: "flex",
 			top: "0",
-			right: "-50px",
+			right: "-55px",
 			height: "100%",
 			transition: "0s",
-			width: "50px"
-		}
+			width: "53px"
+		},
+		".deleteword": {margin: "auto"}
 	};
 	apivm.define("page", Page);
 	apivm.render(apivm.h("page", null), "body");

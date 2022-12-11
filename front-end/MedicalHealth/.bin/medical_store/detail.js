@@ -190,7 +190,7 @@
 					{class: "list"},
 					apivm.h("image", {
 						class: "image",
-						src: this.data.item.image,
+						src: this.data.item.img,
 						mode: "center"
 					}),
 					apivm.h("text", {class: "name"}, "药物名称：", this.data.item.name, " "),
@@ -299,7 +299,7 @@
 		},
 		".instruct": {
 			width: "100%",
-			height: "5%",
+			height: "8%",
 			fontSize: "20px",
 			marginLeft: "10px",
 			borderTop: "1px double #f0f0f0"

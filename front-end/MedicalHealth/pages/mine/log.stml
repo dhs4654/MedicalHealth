@@ -1,0 +1,46 @@
+<template name='tpl'>
+	<view class="page">
+		<!-- 顶部导航 -->
+		<safe-area></safe-area>
+		<view class="login">
+			<view class="back" @click="backtomain">
+				<img src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/6958c7448f8d7106d3ee273fa7430063.png" alt="back" class="nav-bar-back-icon"/>
+			</view>
+			<hoc-login-title-lr />
+			<hoc-login-form-lr />
+			<hoc-login-other-lr />
+		</view>
+	</view>
+</template>
+<script>
+import '../../components/feature-component/log1.stml'
+import '../../components/feature-component/log2.stml'
+import '../../components/feature-component/log3.stml'
+export default {
+	name:"hoc-login-lr",
+	data() {
+		return {
+		
+		}
+	},
+	methods: {
+		backtomain(){
+			api.closeFrame();
+        }
+	}
+}
+</script>
+<style>
+.page {
+	height: 100%;
+}
+.login {
+	height: 100%;
+	padding: 15px 25px 30px;
+	background-color: #fff;
+}
+.nav-bar-back-icon {
+	width: 20px;
+	height: 20px;
+}
+</style>

@@ -1,0 +1,50 @@
+<template name='tpl'>
+	<view class="page">
+		<!-- 顶部导航 -->
+		<safe-area></safe-area>
+		<view class="register">
+			<view class="back" @click="backtomain">
+				<img src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/6958c7448f8d7106d3ee273fa7430063.png" alt="back" class="nav-bar-back-icon"/>
+			</view>
+			<hoc-login-title-lr :data="titleData" />
+			<hoc-verify-form-lr />
+			<hoc-register-footer-lr />
+		</view>
+	</view>
+</template>
+<script>
+import '../../components/feature-component/banding1.stml'
+import '../../components/feature-component/banding2.stml'
+import '../../components/feature-component/banding3.stml'
+export default {
+	name: "hoc-register-lr",
+	data() {
+		return {
+			titleData: {
+				title: '绑定用户',
+				otherText: '输入想要绑定用户的手机号',
+				btnText: '（老人端）'
+			}
+		}
+	},
+	methods: {
+		backtomain(e){
+            api.closeFrame();
+        }
+	}
+}
+</script>
+<style>
+.page {
+	height: 100%;
+}
+.register {
+	height: 100%;
+	padding: 15px 25px 30px;
+	background-color: #fff;
+}
+.nav-bar-back-icon {
+	width: 20px;
+	height: 20px;
+}
+</style>

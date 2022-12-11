@@ -1,0 +1,200 @@
+<template>
+	<safe-area class="hoc-mine-page-wrapper">
+		<view class="hoc-mine-page-sgm">
+			<!-- <hoc-nav-bar-sgm title="我的"/> -->
+			<view class="nav-bar" :style="{background: this.props.bgClolor || '#fff'}">
+				<text class="nav-bar-title" :style="{color: this.props.textColor || '#000'}">{{title}}</text>
+			</view>
+			<!-- <hoc-user-panel-sgm /> -->
+			<view class="hoc-user-panel-sgm">
+				<image class="hoc-user-panel-sgm_bg"
+					src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/4ab30505532e709b72bc49fde2ff3b2b.png"></image>
+				<view class="hoc-user-panel-sgm-wrap">
+					<image class="hoc-user-panel-sgm-logo" :src="avatar" mode="aspectFill"></image>
+					<text class="hoc-user-panel-sgm-name" id="nickn">{{nickname}}</text>
+					<image class="hoc-user-panel-sgm-gol"
+						src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/7158c8c5425bd78b31d74da4ca8563f2.png"></image>
+				</view>
+			</view>
+			<view class="hoc-menu-list-item">
+				<text class="hoc-menu-list-item-title" id="ident"> {{port}}</text>
+			</view>
+			<view class="hoc-menu-list-item">
+				<text class="hoc-menu-list-item-title" id="bindt"> {{bindtele}}</text>
+			</view>
+		</view>
+		<hoc-menu-list-sgm />
+	</safe-area>
+</template>
+<script>
+
+api.addEventListener({
+	name:'tabother',
+}, function(ret){
+	api.sendFrameToBack({
+		from:'personal'
+	});
+	api.alert({
+		
+		msg : 'yincang'
+	})
+})
+import '../../components/feature-component/personal.stml'
+// if (api.pageParam.identitys == 'client') {
+			const socket = new WebSocket('ws://124.222.44.207:5000/websocket');
+			
+			var x = api.getPrefs({
+				sync: true,
+				key: 'id'
+			});
+			api.ajax({
+					url: 'http://124.222.44.207:5000/userLibrary/users/' + x,
+					method: 'get',
+					headers: {
+						'Content-Type': 'application/json;charset=utf-8'
+					},
+
+				}, function (ret, err) {
+					tele = ret.data.telephone;
+					
+					var obj = { telephone: tele };
+					var js = JSON.stringify(obj);
+					socket.addEventListener('open', function (event) {
+						socket.send(js);
+					})
+					socket.addEventListener('message', function (event) {
+						
+						api.confirm({
+							title: 'confirmband',
+							msg: '电话为' + event.data + '的用户对您发出绑定请求，是否接受？',
+							buttons: ['是', '否']
+						}, function (ret, err) {
+							var index = ret.buttonIndex;
+							if (index == 1) {
+								api.ajax({
+									url: 'http://124.222.44.207:5000/userLibrary/ack',
+									method: 'put',
+									headers: {
+										'Content-Type': 'application/json;charset=utf-8'
+									},
+								
+									data: {
+										body: {
+											telephone: tele,
+											bindTelephone: event.data
+										}
+									},
+								}, function (ret, err) {
+									api.alert({
+										msg: '回复已确认，绑定成功！'
+									})
+
+								})
+							}
+						});
+
+					})
+
+				})
+
+
+			
+		//}
+export default {
+	name: 'hoc-mine-page-sgm',
+	apiready() {
+		
+		
+
+	},
+	content() {
+
+	},
+	data() {
+		return {
+			port: '  当前端口:' + api.pageParam.identitys,
+			title: '我的',
+			avatar: "http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/6fbc0b9f6404895c6400d27261011ab1.png",
+			nickname: ' ' + api.pageParam.names,
+			bindtele: api.pageParam.bindTelephones == '00000000000' ? '  未绑定用户' : '  绑定用户电话:' + api.pageParam.bindTelephones
+		}
+	},
+	methods: {
+		
+
+	}
+}
+</script>
+<style>
+.hoc-mine-page-wrapper {
+	display: flex;
+	flex-direction: column;
+	background: white;
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+.nav-bar {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	height: 48px;
+	border-bottom: 0.5px solid #e8e8e8;
+}
+.nav-bar-title {
+	font-size: 17px;
+	font-weight: 500;
+}
+.hoc-user-panel-sgm {
+	height: 126px;
+}
+.hoc-user-panel-sgm_bg {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.hoc-user-panel-sgm-wrap {
+	flex-direction: row;
+	align-items: center;
+	height: 100%;
+}
+.hoc-user-panel-sgm-logo {
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	margin-left: 20px;
+	background-color: #f8f8f8;
+}
+.hoc-user-panel-sgm-name {
+	flex: 1;
+	font-size: 22px;
+	color: white;
+	margin: 0 15px;
+}
+.hoc-user-panel-sgm-gol {
+	width: 16px;
+	height: 16px;
+	margin-right: 20px;
+}
+.hoc-menu-list {
+	border-radius: 4px;
+	background-color: white;
+	margin-bottom: 10px;
+	padding: 0 10px;
+}
+.hoc-menu-list-item {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid #f8f8f8;
+	height: 62px;
+}
+.hoc-menu-list-item-title {
+	font-size: 20px;
+	color: #333;
+}
+</style>

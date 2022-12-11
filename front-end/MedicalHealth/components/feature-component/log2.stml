@@ -1,0 +1,152 @@
+<template>
+	<view class="page">
+		<view class="form">
+			<view class="f-input-box input-phone">
+				<text>手机号</text>
+				<input class="f-input" style="padding-left:37px" id="phonenum" type="string" keyboard-type="string" maxlength="11"
+					:placeholder="data.placeholderPhone" :value="data.valuePhone"></input>
+				<view class="areacode">
+					<text>+86</text>
+				</view>
+			</view>
+
+			<view class="f-input-box">
+				<text>密码</text>
+				<input class="f-input" type="password" id="passwo" :value="data.valuePassword"
+					:placeholder="data.placeholderPassword"></input>
+			</view>
+			<view class="btn-login" @click="logsuccess">
+				<text class="btn-login-text">登录</text>
+			</view>
+			<view class="btn-other">
+				<text class="btn-other-text">短信快捷登录</text>
+				<text class="btn-other-text">忘记密码</text>
+			</view>
+		</view>
+	</view>
+</template>
+<script>
+export default {
+	name: 'hoc-login-form-lr',
+	apiready() {//like created
+
+	},
+	data() {
+		return {
+			data: this.props.data || {
+				placeholderPhone: "请输入手机号",
+				valuePhone: "",
+				placeholderPassword: "至少6位数字+字母",
+				valuePassword: "",
+			}
+		}
+	},
+	methods: {
+		logsuccess(e){
+			
+			var phonen = document.getElementById("phonenum").value;
+			var passw = document.getElementById("passwo").value;
+			var nickna;
+			api.ajax({
+				url: 'http://124.222.44.207:5000/userLibrary/getByTelephone/' + phonen ,
+				method: 'get',
+				headers:{
+					'Content-Type': 'application/json;charset=utf-8'
+				}
+			},function(ret, err){
+				if(passw != ret.data.password){
+					api.alert({
+						msg : '密码错误！'
+					})
+				}
+				else{
+
+				api.sendEvent({
+            	name: 'loginsuccess',
+            	extra: {
+					names: nickna,
+                	tel: phonen
+             	}
+         		});
+				api.setPrefs({
+					key: 'id',
+					value: ret.data.id + ''
+				});
+				nickna = ret.data.name;
+				api.closeFrame();
+				api.openFrame({
+				name: 'personal',
+				url:'../../pages/mine/personalcenter.stml',
+				fixedOn:'page4',
+				reload:true,
+				pageParam:{
+					"names": nickna ,
+					"identitys": ret.data.identity,
+					"bindTelephones": ret.data.bindTelephone
+				},
+				rect: {
+						x: 0,             //左上角x坐标，数字类型
+						y: 0,             //左上角y坐标，数字类型
+						w: 'auto',             //宽度，若传'auto'，页面从x位置开始自动充满父页面宽度，数字或固定值'auto'
+						h: 510,             //高度，若传'auto'，页面从y位置开始自动充满父页面高度，数字或固定值'auto'
+
+
+					}
+				})
+				
+				}
+			
+			});
+			
+			
+		}
+	}
+}
+</script>
+<style>
+.page {
+	height: 100%;
+}
+.form {
+	margin-top: 50px;
+	font-size: 14px;
+}
+.f-input {
+	margin-bottom: 20px;
+	width: 100%;
+	height: 40px;
+	box-sizing: border-box;
+	border: none;
+	border-bottom: 1px solid #efefef;
+}
+
+.areacode {
+	position: absolute;
+	bottom: 30px;
+	left: 0;
+}
+
+.btn-login {
+	margin-top: 20px;
+	width: 100%;
+	height: 46px;
+	border-radius: 4px;
+	background: #17b998;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+}
+.btn-login-text {
+	font-size: 15px;
+	color: #fff;
+}
+.btn-other {
+	flex-direction: row;
+	justify-content: space-between;
+}
+.btn-other-text {
+	margin-top: 20px;
+	font-size: 14px;
+	color: #17b998;
+}
+</style>

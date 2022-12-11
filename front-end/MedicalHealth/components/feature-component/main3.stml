@@ -1,0 +1,112 @@
+<template>
+	<view class="hoc-menu-list">
+        <view
+          class="hoc-menu-list-item"
+        >
+          <text class="hoc-menu-list-item-title">{{ data.modify }}</text>
+          <img
+            class="hoc-menu-list-item-gor"
+            src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/c89316e175437ebce8f361ef3f9c3973.png"
+          />
+        </view>
+        <view
+          class="hoc-menu-list-item"
+        >
+          <text class="hoc-menu-list-item-title">{{ data.port }}</text>
+          <img
+            class="hoc-menu-list-item-gor"
+            src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/c89316e175437ebce8f361ef3f9c3973.png"
+          />
+        </view>
+        <view
+          class="hoc-menu-list-item"
+          @click="tobinding"
+        >
+          <text class="hoc-menu-list-item-title">{{ data.band }}</text>
+          <img
+            class="hoc-menu-list-item-gor"
+            src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/c89316e175437ebce8f361ef3f9c3973.png"
+          />
+        </view>
+        <view
+          class="hoc-menu-list-item"
+          @click="tochange"
+        >
+          <text class="hoc-menu-list-item-title">{{ data.change }}</text>
+          <img
+            class="hoc-menu-list-item-gor"
+            src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/c89316e175437ebce8f361ef3f9c3973.png"
+          />
+        </view>
+        <view
+          class="hoc-menu-list-item"
+        >
+          <text class="hoc-menu-list-item-title">{{ data.logout }}</text>
+          <img
+            class="hoc-menu-list-item-gor"
+            src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/c89316e175437ebce8f361ef3f9c3973.png"
+          />
+        </view>
+        
+      </view>
+</template>
+<script>
+export default {
+	name: 'hoc-menu-list-sgm',
+	apiready() {//like created
+
+	},
+	data() {
+		return {
+			data: this.props.data || {
+        modify:"修改信息",
+        port:"切换端口",
+				band:"绑定账号",
+        change:"切换账号",
+        logout:"退出登录"
+			}
+		}
+	},
+	methods: {
+        tobinding(e){
+            api.openWin({
+              name:'binding',
+              url:'../../pages/mine/binding.stml'
+            });
+        },
+        tochange(e){
+          api.openWin({
+            name:'change',
+            url:'../../pages/mine/log.stml'
+          });
+        }
+	}
+}
+</script>
+<style>
+.hoc-menu-list {
+    border-radius: 4px;
+    background-color: white;
+    margin-bottom: 10px;
+    padding: 0 10px;
+}
+.hoc-menu-list-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f8f8f8;
+    height: 49px;
+}
+.hoc-menu-list-item:active {
+    opacity: 0.7;
+}
+.hoc-menu-list-item-title {
+    font-size: 14px;
+    color: #333;
+}
+.hoc-menu-list-item-gor {
+    width: 10px;
+    height: 10px;
+}
+</style>

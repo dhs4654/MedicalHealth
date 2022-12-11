@@ -1,0 +1,43 @@
+<template>
+	<view class="hoc-register-footer-lr">
+		<view class="footer">
+			<text class="text-default">登录注册即表明同意</text>
+			<text class="text-active">用户协议</text>
+			<text class="text-default">和</text>
+			<text class="text-active">隐私政策</text>
+		</view>
+	</view>
+</template>
+<script>
+export default {
+	name: 'hoc-register-footer-lr',
+	apiready() {//like created
+
+	},
+	data() {
+		return {
+
+		}
+	},
+	methods: {
+
+	}
+}
+</script>
+<style>
+.footer {
+	margin-top: 35px;
+	flex-direction: row;
+	justify-content: center;
+	width: 100%;
+}
+.text-default {
+	font-size: 10px;
+	color: #9c9c9c;
+}
+.text-active {
+	margin: 0 2px;
+	font-size: 10px;
+	color: #17b998;
+}
+</style>

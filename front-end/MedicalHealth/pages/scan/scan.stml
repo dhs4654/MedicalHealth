@@ -112,19 +112,59 @@ export default {
     </scroll-view>
 </template>
 <script>
+api.addEventListener({
+            name:'tabframe'
+        },function(ret, err){
+          if(ret.name == api.frameName){
+            api.setFrameAttr({
+  				name: 'personal',
+    			hidden: true
+			});
+			
+          }
+        });
+import "../../components/feature-component/hoc-nav-bar-sgm.stml";
+import "../../script/api.js";
+import "../../components/avm-ui/button";
 export default {
 	data() {
 		return{
 			name: '桂林西瓜霜',
             dateOfManufacture: '2001-1-1',
             qualityGuaranteePeriod: '2100-1-1',
+            // usrId : '',
+            // usrTel: '',
+            // isBind: '',
+            // bindTel: '',
 		}
 	},
 	methods: {
 		apiready(){
+            // this.data();
 			this.clear();
             this.openBar();
+            // this.getInfo();
 		},
+        // getInfo() {
+        //    this.data.usrId = api.getPrefs({
+		// 	    sync: true,
+		// 	    key: 'id'
+		//     });
+        //     api.ajax({
+		// 		    url: 'http://124.222.44.207:5000/userLibrary/users/' + this.data.usrId,
+		// 		    method: 'get',
+		// 		    headers: {
+		// 		    	'Content-Type': 'application/json;charset=utf-8'
+		// 		    } 
+        //         }, function (ret, err) {
+		// 	    	this.data.usrTel= ret.data.telephone;
+        //             this.data.isBind = ret.data.ack;
+        //             this.data.binTel = ret.data.bindTelephone;
+		// 	    	// var bindtel = document.getElementById("telephone").value;
+        //             // api.alert({msg: ret})
+        //             // api.alert({msg: usrTel});
+        //         });
+        // },
         onInput1(e){
 			this.data.name = e.detail.value;        
 		},
@@ -173,42 +213,122 @@ export default {
                 });
             }
         },
+        getInfo(ret) {
+            this.data.usrTel = ret.data.telephone;
+            this.data.isBind = ret.data.ack;
+            this.data.binTel = ret.data.bindTelephone;
+        },
         addToDatabase(type) {
             let that = this;
-            api.ajax({
-                url:'http://124.222.44.207:5000/drugLibrary/drugs',
-                method: 'post',
-                headers: {
-					"Content-Type": "application/json;charset=utf-8",
-				},
-                dataType: 'json',
-                data: {
-                    body: {
-                    'name': that.data.name,
-                    'desc': '0',
-                    'manufacturedate': that.data.dateOfManufacture,
-                    'duedate': that.data.qualityGuaranteePeriod,
-                    'owner': type,
-                    'img': '0',
-                    'clockFlags': '0000',
-                    'clockTime': '0000000000000000',
-                    'weekFrequency': '0000000',
-                    'telephone': '0',
+            
+            var usrId = api.getPrefs({
+			    sync: true,
+			    key: 'id'
+		    });
+
+            // api.alert({ msg: usrId});
+            if (usrId == '' || usrId == 0 || usrId == undefined) {
+                api.alert({ msg: '您还未登录，请先登录' });
+            } else {
+                api.ajax({
+				    url: 'http://124.222.44.207:5000/userLibrary/users/' + usrId,
+				    method: 'get',
+				    headers: {
+				    	'Content-Type': 'application/json;charset=utf-8'
+				    },
+                    // async: true,/
+                }, function (ret, err) {
+                    // api.alert({msg: err});
+			    	// that.data.usrTel = ret.data.telephone;
+                    // that.data.isBind = ret.data.ack;
+                    // that.data.binTel = ret.data.bindTelephone;
+                    var usrTel = ret.data.telephone;
+                    var isBind = ret.data.ack;
+                    var bindTel = ret.data.bindTelephone;
+
+                    if (type == 2 && isBind == false) {
+                        api.alert({msg: '未绑定亲属！'});
+                    } else {
+                        api.ajax({
+                        url:'http://124.222.44.207:5000/drugLibrary/drugs',
+                        method: 'post',
+                        headers: {
+			        		"Content-Type": "application/json;charset=utf-8",
+			        	},
+                        dataType: 'json',
+                        data: {
+                            body: {
+                            'name': that.data.name,
+                            'desc': '0',
+                            'manufacturedate': that.data.dateOfManufacture,
+                            'duedate': that.data.qualityGuaranteePeriod,
+                            'owner': type,
+                            'img': '0',
+                            'clockFlags': '0000',
+                            'clockTime': '0000000000000000',
+                            'weekFrequency': '0000000',
+                            'telephone': type == 1 ? usrTel : bindTel,
+                            }
+                        },
+    
+                    }, function(ret, err){
+                            if (ret['code'] == 200) {
+                                if (type == 1) api.alert({msg:'成功加入个人药库'});
+                                if (type == 2) api.alert({msg:'成功加入亲属药库'});
+                                that.clear();
+                            } 
+                            // if (ret) {
+                            //     api.alert(ret);
+                            // } else {
+                            //     api.alert(err);
+                            // }
+                    });
                     }
-                },
-                
-            }, function(ret, err){
-                    if (ret['code'] == 200) {
-                        if (type == 1) api.alert({msg:'成功加入个人药库'});
-                        if (type == 2) api.alert({msg:'成功加入亲属药库'});
-                        that.clear();
-                    } 
-                    // if (ret) {
-                    //     api.alert(ret);
-                    // } else {
-                    //     api.alert(err);
-                    // }
-            });
+			    	// var bindtel = document.getElementById("telephone").value;
+                    // api.alert({msg: ret});
+                    // api.alert({msg: that.data.usrTel});
+                    // api.alert({msg: that.data.isBind});
+                    // api.alert({msg: that.data.binTel});
+                    // that.getInfo(ret);
+                });
+                // api.alert({msg: that.data.usrTel});
+                // api.alert({msg: that.data.bindTel});
+                // api.alert({msg: that.data.isBind});
+                    // api.ajax({
+                    //     url:'http://124.222.44.207:5000/drugLibrary/drugs',
+                    //     method: 'post',
+                    //     headers: {
+			        // 		"Content-Type": "application/json;charset=utf-8",
+			        // 	},
+                    //     dataType: 'json',
+                    //     data: {
+                    //         body: {
+                    //         'name': that.data.name,
+                    //         'desc': '0',
+                    //         'manufacturedate': that.data.dateOfManufacture,
+                    //         'duedate': that.data.qualityGuaranteePeriod,
+                    //         'owner': type,
+                    //         'img': '0',
+                    //         'clockFlags': '0000',
+                    //         'clockTime': '0000000000000000',
+                    //         'weekFrequency': '0000000',
+                    //         'telephone': '0',
+                    //         }
+                    //     },
+    
+                    // }, function(ret, err){
+                    //         if (ret['code'] == 200) {
+                    //             if (type == 1) api.alert({msg:'成功加入个人药库'});
+                    //             if (type == 2) api.alert({msg:'成功加入亲属药库'});
+                    //             that.clear();
+                    //         } 
+                    //         // if (ret) {
+                    //         //     api.alert(ret);
+                    //         // } else {
+                    //         //     api.alert(err);
+                    //         // }
+                    // });
+            }
         },
         closeBar(e) {
             api.setTabLayoutAttr({

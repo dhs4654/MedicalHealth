@@ -1,54 +1,73 @@
 <template>
 	<safe-area class="view_1">
 		<hoc-nav-bar-sgm title="我的药库"></hoc-nav-bar-sgm>
-		<view class="a-tabs">
-			<view v-for="(item, index) in TabList" class="a-tab-item" @click="tabClick(item, index)">
-				<text
-					:class="`a-tab-item-text  ${current === index ? 'a-tab-item-text-active' : ''}`">{item.name}</text>
-				<text class="a-tab-item-line" v-if="current === index"></text>
-			</view>
-		</view>
-		<scroll-view class="view_2" scroll-y="true" style="height :auto">
-			<view v-for="(item,index) in dataList" :key="item.id">
-				<view v-if="dataList.length != 0">
-					<div class="list">
-						<view class="list" ontouchstart="touchStart(event)" ontouchmove="touchMove(event)"
-							ontouchend="touchEnd(event)" :id="item.id"
-							:style="currentid==item.id?handleSwipe:'transform:translateX(0px)'">
-							<image class="image" :src="item.image" mode="topleft" />
-							<view class="information">
-								<text class="name">
-									{{item.name }}
-								</text>
-								<text class="date">
-									{{item.manufacturedate }}
-								</text>
-								<text class="date">
-									{{item.duedate }}
-								</text>
-							</view>
-							<view class="detail" :id2="index">
-								<button onclick="myopen(event)" :id2="index">详细信息</button>
-							</view>
-						</view>
-						<div class="delete" @click="deleteItem(index,item.id)"
-							:style="currentid==item.id?handleSwipe:'transform:translateX(0px)'">
-							<text>删除</text>
-						</div>
-					</div>
+		<view v-if="tel">
+			<view v-show="identity==1">
+				<view class="a-tabs">
+					<view v-for="(item, index) in TabList" class="a-tab-item" @click="tabClick(item, index)">
+						<text
+							:class="`a-tab-item-text  ${current === index ? 'a-tab-item-text-active' : ''}`">{item.name}</text>
+						<text class="a-tab-item-line" v-if="current === index"></text>
+					</view>
 				</view>
 			</view>
-			<view v-if="dataList.length === 0">
-				<text class="typebox">这一天您没有过期的药物哦</text>
+			<view class="containere" style="height:auto">
+				<picker name="date-picker" class="date-picker_contaner" mode="multiSelector" :range="dateList"
+					:value={{dateMltiSelectorValue}} onchange={this.dateMultiSelectorChange}
+					oncolumnchange={this.dateMultiSelectorColumnChange}>
+					<text class="date-picker_label">{label}:{datenow}</text>
+				</picker>
 			</view>
-		</scroll-view>
+			<scroll-view class="view_2" scroll-y="true" style="height :auto">
+				<view v-for="(item,index) in dataList" :key="item.id">
+					<view v-if="dataList.length != 0">
+						<div class="list">
+							<view class="list" ontouchstart="touchStart(event)" ontouchmove="touchMove(event)"
+								ontouchend="touchEnd(event)" :id="item.id"
+								:style="currentid==item.id?handleSwipe:'transform:translateX(0px)'">
+								<image class="image" src={{item.img}} mode="topleft" />
+								<view class="information">
+									<text v-if="datenow<=item.duedate" class="nameblack">
+										{{item.name}}
+									</text>
+									<text v-if="datenow>item.duedate" class="namered">
+										{{item.name}}(已过期）
+									</text>
+									<text class="date">
+										{{item.manufacturedate }}
+									</text>
+									<text class="date">
+										{{item.duedate }}
+									</text>
+								</view>
+								<view class="detail" :id2="index">
+									<button onclick="myopen(event)" :id2="index">详细信息</button>
+								</view>
+							</view>
+							<div class="delete" @click="deleteItem(index,item.id)"
+								:style="currentid==item.id?handleSwipe:'transform:translateX(0px)'">
+								<text class="deleteword">删除</text>
+							</div>
+						</div>
+					</view>
+				</view>
+				<view v-if="dataList.length === 0">
+					<text class="typebox">这一天您没有过期的药物哦</text>
+				</view>
+			</scroll-view>
+		</view>
 	</safe-area>
 </template>
 <script>
 import "../../components/feature-component/hoc-nav-bar-sgm.stml";
 import "../../script/api.js";
 import "../../components/avm-ui/button";
+var vm = null;
 apiready = function () {
+	api.setFrameAttr({
+		name: 'personal',
+		hidden: true
+	});
 	var header = $api.dom('header');
 	var footer = $api.dom('footer');
 	var headerH = $api.fixStatusBar(header);
@@ -57,15 +76,39 @@ apiready = function () {
 		style: 'dark'
 	});
 };
+api.addEventListener({
+	name: 'tabframe'
+}, function (ret, err) {
+	if (ret.name == api.frameName) {
+		api.setFrameAttr({
+			name: 'personal',
+			hidden: true
+		});
+		var a = api.getPrefs({
+			sync: true,
+			key: 'id'
+		});
+		if (a == '') {
+			api.alert({ msg: '您还未登录，请先登录' })
+		}
+		else {
+			vm.reinitData(a);
+		}
+	}
+});
 export default {
 	name: 'page',
 	data() {
 		return {
+			usrid: '',
+			identity: '',
+			tel: '',
+			bindtel: '',
 			year: [],
 			month: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
 			day: [],
 			yearNow: new Date().getFullYear(),
-			dateMltiSelectorValue: [0, 0, 0],
+			dateMltiSelectorValue: [10, 0, 0],
 			selectYear: new Date().getFullYear(),
 			selectMoth: new Date().getMonth() + 1,
 			selectDay: new Date().getDate(),
@@ -87,17 +130,28 @@ export default {
 			moveX: 0,  //滑动时的位置
 			disX: 0, //移动距离
 			handleSwipe: 'transform:translateX(0px)',//滑动时的效果,动态绑定
-			delBtnWidth: 50, //删除按钮宽度单位（px）
+			delBtnWidth: 55, //删除按钮宽度单位（px）
 			currentid: '',
 		};
 	},
 	installed() {
-		//获取当前时间
-		this.getYears();
-		this.initTime();
-		this.initData();
+		vm = this;
+		this.telinit();
 	},
 	methods: {
+		//判断是否已传递参数
+		telinit() {
+			var a = api.getPrefs({
+				sync: true,
+				key: 'id'
+			});
+			if (a == '') {
+				api.alert({ msg: '您还未登录，请先登录' })
+			}
+			else {
+				this.usrid = a;
+			}
+		},
 		//获取年份数组
 		getYears() {
 			this.year = []; //一个页面多次使用的情况 必须先清空 否则会出现各种问题
@@ -128,10 +182,13 @@ export default {
 			return n[1] ? n : '0' + n;
 		},
 		initData() {  //异步请求
-			const request = (url, params, method) => {
+			this.totaldataList = [];
+			this.current = 0;
+			//根据用户id获取用户信息
+			const requestusr = (url, params, method) => {
 				return new Promise((resolve, reject) => {
 					api.ajax({
-						url: 'http://124.222.44.207:5000/drugLibrary/drugs',
+						url: 'http://124.222.44.207:5000/userLibrary/users/' + this.usrid,
 						method: 'get',
 					}, function (ret, err) {
 						if (ret) {
@@ -142,12 +199,44 @@ export default {
 					});
 				})
 			};
-			request().then(res => {
+			requestusr().then(res => {
+				if (res.data) {
+					this.identity = res.data.identity == 'client' ? 2 : 1;
+					this.tel = res.data.telephone;
+					if (this.identity == 1 && res.data.bindTelephone != '') {
+						this.bindtel = res.data.bindTelephone;
+					}
+				} else {
+					api.alert({
+						title: '首页请求用户数据提示',
+						msg: res.reject
+					});
+				}
+			})
+			//获取该用户的药库
+			const requestmedi1 = (url, params, method) => {
+				return new Promise((resolve, reject) => {
+					api.ajax({
+						url: 'http://124.222.44.207:5000/drugLibrary/getByTelephone/' + this.tel,
+						method: 'get',
+					}, function (ret, err) {
+						if (ret) {
+							resolve(ret)
+						} else {
+							reject('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+						};
+					});
+				})
+			};
+			requestmedi1().then(res => {
 				if (res.data) {
 					this.totaldataList = res.data;
 					this.totaldataList.sort(this.dateorder);
 					//初始化设定当前药库列表展示（默认全部）
 					this.dataList = this.totaldataList;
+					if (this.identity == 1 && this.bindtel == '') {
+						this.setalert();
+					}
 				} else {
 					api.alert({
 						title: '首页请求数据提示',
@@ -155,6 +244,43 @@ export default {
 					});
 				}
 			})
+			//根据绑定手机号获取绑定用户的药库
+			if (this.identity == 1 && this.bindtel != '') {
+				const requestmedi2 = (url, params, method) => {
+					return new Promise((resolve, reject) => {
+						api.ajax({
+							url: 'http://124.222.44.207:5000/drugLibrary/getByTelephone/' + this.bindtel,
+							method: 'get',
+						}, function (ret, err) {
+							if (ret) {
+								resolve(ret)
+							} else {
+								reject('错误码：' + err.code + '；错误信息：' + err.msg + '网络状态码：' + err.statusCode)
+							};
+						});
+					})
+				};
+				requestmedi2().then(res => {
+					if (res.data) {
+						this.totaldataList = this.totaldataList.concat(res.data);
+						this.totaldataList.sort(this.dateorder);
+						//初始化设定当前药库列表展示（默认全部）
+						this.dataList = this.totaldataList;
+						this.setalert();
+					} else {
+						api.alert({
+							title: '首页请求数据提示',
+							msg: res.reject
+						});
+					}
+				})
+			}
+		},
+		reinitData(a) {
+			this.usrid = a;
+			this.getYears();
+			this.initTime();
+			this.initData();
 		},
 		//排序顺序：按过期日期自前
 		dateorder(a, b) {
@@ -163,6 +289,22 @@ export default {
 			const val1 = Math.floor(new Date(obj1).getTime() / 1000);
 			const val2 = Math.floor(new Date(obj2).getTime() / 1000);
 			return val1 - val2
+		},
+		//药物过期提醒
+		setalert() {
+			var len = this.totaldataList.length;
+			let i = 0;
+			for (; i < len; i++) {
+				if (this.totaldataList[i].duedate < this.datenow) {
+					var contentidentity = this.totaldataList[i].owner == 1 ? '您的药物【' : '您家人的药物【'
+					api.notification({
+						notify: {
+							title: '药物过期通知！',
+							content: contentidentity + this.totaldataList[i].name + '】已过期，请及时清理！'
+						}
+					});
+				}
+			}
 		},
 		//根据年月获取天数
 		setDays() {
@@ -210,17 +352,26 @@ export default {
 		tabClick(item, index) {
 			this.current = index;
 			this.dataList = [];
-			let arraypro = []; //全部
+			let arraypro1 = []; //自己
+			let arraypro2 = [];//家人
 			if (index == 0) {
 				this.dataList = this.totaldataList;
 			} else {
-				//自己/亲人
 				for (let i = 0; i < this.totaldataList.length; i++) {
-					if (this.totaldataList[i].owner == index) {
-						arraypro.push(this.totaldataList[i]);
+					//自己
+					if (this.totaldataList[i].telephone == this.tel) {
+						arraypro1.push(this.totaldataList[i]);
+					}
+					if (this.totaldataList[i].telephone == this.bindtel) {
+						arraypro2.push(this.totaldataList[i]);
 					}
 				}
-				this.dataList = arraypro;
+				if (index == 1) {
+					this.dataList = arraypro1;
+				}
+				else {
+					this.dataList = arraypro2;
+				}
 			}
 			this.resumetouch();
 		},
@@ -307,7 +458,7 @@ export default {
 						this.dataList = arraypro;
 					}
 					this.resumetouch();
-					api.alert({msg:'药物删除成功'});
+					api.alert({ msg: '药物删除成功' });
 				} else {
 					api.alert({
 						title: '首页请求数据提示',
@@ -399,12 +550,11 @@ export default {
 }
 .view_2 {
 	width: 100%;
-	border-radius: 30rpx;
+	border-radius: 10rpx;
 	display: flex;
 	flex-direction: column;
 	box-sizing: border-box;
 	font-size: 35rpx;
-	/*margin: 30rpx auto;*/
 	padding: 10rpx 0 10rpx 0;
 	position: relative;
 }
@@ -428,11 +578,18 @@ export default {
 	flex-direction: column;
 	color: darkred;
 }
-.name {
+.nameblack {
 	width: 150px;
 	font-size: 17rpx;
 	word-break: break-all;
 	color: black;
+	margin-left: 30px;
+}
+.namered {
+	width: 150px;
+	font-size: 17rpx;
+	word-break: break-all;
+	color: red;
 	margin-left: 30px;
 }
 .date {
@@ -454,9 +611,12 @@ export default {
 	position: absolute;
 	display: flex;
 	top: 0;
-	right: -50px;
+	right: -55px;
 	height: 100%;
 	transition: 0s;
-	width: 50px;
+	width: 53px;
+}
+.deleteword {
+	margin: auto;
 }
 </style>

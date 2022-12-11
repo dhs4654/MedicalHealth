@@ -1,0 +1,139 @@
+<template>
+	<view class="hoc-verify-form-lr">
+		<view class="form">
+			<view class="f-input-box input-phone">
+				<text>手机号</text>
+				<input class="f-input" id="telephone" style="padding-left:37px" type="number" keyboard-type="number"
+					maxlength="11" :placeholder="data.placeholderPhone" :value="data.valuePhone"></input>
+				<view class="areacode">
+					<text>+86</text>
+				</view>
+			</view>
+			<view class="f-input-box input-verify">
+				<text>验证码</text>
+				<input class="f-input" type="number" keyboard-type="number" :value="data.valueVerify"
+					:placeholder="data.placeholderVerify"></input>
+				<view class="btn-getverify"><text class="btn-getverify-text">获取验证码</text></view>
+			</view>
+			<view class="btn-login" @click="sendband">
+				<text class="btn-login-text">{data.btnText}</text>
+			</view>
+		</view>
+	</view>
+</template>
+<script>
+export default {
+	name: 'hoc-verify-form-lr',
+	props: {
+		data: {
+			type: Object,
+			default: function () {
+				return {}
+			}
+		}
+	},
+	apiready() {//like created
+
+	},
+	data() {
+		return {
+			data: this.props.data || {
+				placeholderPhone: "请输入对方手机号",
+				valuePhone: "",
+				placeholderVerify: "请输入对方收到的验证码",
+				valueVerify: "",
+				btnText: "发出绑定请求"
+			}
+		}
+	},
+	methods: {
+		sendband(e) {
+			var x = api.getPrefs({
+				sync: true,
+				key: 'id'
+			}, function (ret) {
+
+			});
+
+			api.ajax({
+				url: 'http://124.222.44.207:5000/userLibrary/users/' + x,
+				method: 'get',
+				headers: {
+					'Content-Type': 'application/json;charset=utf-8'
+				}
+			}, function (ret, err) {
+				var tele = ret.data.telephone;
+				var bindtel = document.getElementById("telephone").value;
+
+				api.ajax({
+					url: 'http://124.222.44.207:5000/userLibrary/bind',
+					method: 'put',
+					headers: {
+						'Content-Type': 'application/json;charset=utf-8'
+					},
+
+					data: {
+						body: {
+							telephone: tele,
+							bindTelephone: bindtel
+						}
+					},
+				}, function (ret, err) {
+					api.alert({
+						msg: '请求发送成功，等待回复...'
+					})
+
+				})
+			})
+
+
+		}
+
+	}
+}
+</script>
+<style>
+.form {
+	margin-top: 50px;
+	font-size: 14px;
+}
+.f-input {
+	margin-bottom: 20px;
+	width: 100%;
+	height: 40px;
+	box-sizing: border-box;
+	border: none;
+	border-bottom: 1px solid #efefef;
+}
+.areacode {
+	position: absolute;
+	bottom: 30px;
+	left: 0;
+}
+.btn-getverify {
+	position: absolute;
+	right: 0;
+	bottom: 30px;
+}
+.btn-getverify-text {
+	color: #17b998;
+	font-size: 14px;
+}
+.icon-password-img {
+	width: 100%;
+}
+.btn-login {
+	margin-top: 20px;
+	width: 100%;
+	height: 46px;
+	border-radius: 4px;
+	background: #17b998;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+}
+.btn-login-text {
+	font-size: 15px;
+	color: #fff;
+}
+</style>

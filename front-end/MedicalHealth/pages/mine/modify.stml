@@ -1,0 +1,253 @@
+<template>
+	<safe-area class="hoc-mine-page-wrapper">
+		<view class="standplace"></view>
+		<view class="hoc-menu-list">
+			<view class="back" @click="backtoperson">
+				<img src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/6958c7448f8d7106d3ee273fa7430063.png"
+					alt="back" class="nav-bar-back-icon" />
+			</view>
+			<view class="hoc-menu-list-item-choose">
+				<text class="hoc-menu-list-item-title-choose">{{ data.choose }}</text>
+			</view>
+			<view class="hoc-menu-list-item" @click="modifynick">
+				<text class="hoc-menu-list-item-title">{{ data.modifyname }}</text>
+				<img class="hoc-menu-list-item-gor"
+					src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/c89316e175437ebce8f361ef3f9c3973.png" />
+			</view>
+			<view class="hoc-menu-list-item" @click="modifypassw">
+				<text class="hoc-menu-list-item-title">{{ data.modifykey }}</text>
+				<img class="hoc-menu-list-item-gor"
+					src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/c89316e175437ebce8f361ef3f9c3973.png" />
+			</view>
+			<view class="hoc-menu-list-item" @click="modifyports">
+				<text class="hoc-menu-list-item-title">{{ data.modifyport }}</text>
+				<img class="hoc-menu-list-item-gor"
+					src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/c89316e175437ebce8f361ef3f9c3973.png" />
+			</view>
+			<view class='whit'>
+			</view>
+
+		</view>
+	</safe-area>
+</template>
+<script>
+export default {
+	name: 'hoc-menu-list-sgm',
+	apiready() {
+	},
+	data() {
+		return {
+			data: this.props.data || {
+				choose: "请选择要修改的内容：",
+				modifyname: "昵称",
+				modifykey: "密码",
+				modifyport: "子女/老人端切换"
+			}
+		}
+	},
+	methods: {
+		backtoperson(e) {
+			api.sendEvent({
+            	name: 'back',
+            	extra: {
+					
+             	}
+         		});
+			api.closeFrame();
+		},
+		modifynick(e) {
+			var cname;
+
+			var index;
+			api.prompt({
+				msg: '输入你想要修改的昵称：',
+				buttons: ['确定修改', '取消']
+			}, function (ret, err) {
+				index = ret.buttonIndex;
+				cname = ret.text;
+				if (index == 1) {
+
+					var a = api.getPrefs({
+						sync: true,
+						key: 'id'
+					});
+					api.ajax({
+						url: 'http://124.222.44.207:5000/userLibrary/users/' + a,
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json;charset=utf-8'
+						},
+						data: {
+							body: {
+								name: cname
+							}
+						},
+					}, function (ret, err) {
+						api.closeFrame();
+						api.openFrame({
+							name: 'personal',
+							fixedOn:'page4',
+							reload: true,
+							url: '../../pages/mine/personalcenter.stml',
+							pageParam: {
+								"names": cname,
+								"identitys": ret.data.identity,
+								"bindTelephones": ret.data.bindTelephone
+							},
+							rect: {
+								x: 0,             //左上角x坐标，数字类型
+								y: 0,             //左上角y坐标，数字类型
+								w: 'auto',             //宽度，若传'auto'，页面从x位置开始自动充满父页面宽度，数字或固定值'auto'
+								h: 510,             //高度，若传'auto'，页面从y位置开始自动充满父页面高度，数字或固定值'auto'
+
+
+							}
+						})
+					});
+				}
+			});
+		},
+		modifypassw(e) {
+			var cpassw;
+			var index;
+			api.prompt({
+				msg: '输入你想要修改的密码：',
+				buttons: ['确定修改', '取消']
+			}, function (ret, err) {
+				index = ret.buttonIndex;
+				cpassw = ret.text;
+				if (index == 1) {
+					var a = api.getPrefs({
+						sync: true,
+						key: 'id'
+					});
+					api.ajax({
+						url: 'http://124.222.44.207:5000/userLibrary/users/' + a,
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json;charset=utf-8'
+						},
+						data: {
+							body: {
+								password: cpassw
+							}
+						},
+					}, function (ret, err) {
+						api.closeFrame({
+
+						})
+					});
+				}
+			});
+		},
+		modifyports(e) {
+			var cport;
+			var index;
+			var cname;
+			api.prompt({
+				msg: '输入端口名称（server为子女端、client为老人端）：',
+				buttons: ['确定修改', '取消']
+			}, function (ret, err) {
+				index = ret.buttonIndex;
+				cport = ret.text;
+				
+				if (index == 1) {
+					if(cport == 'server' || cport == 'client'){
+
+					var a = api.getPrefs({
+						sync: true,
+						key: 'id'
+					});
+					api.ajax({
+						url: 'http://124.222.44.207:5000/userLibrary/users/' + a,
+						method: 'put',
+						headers: {
+							'Content-Type': 'application/json;charset=utf-8'
+						},
+						data: {
+							body: {
+								identity: cport
+							}
+						},
+					}, function (ret, err) {
+						api.closeFrame();
+						api.openFrame({
+							name: 'personal',
+							url: '../../pages/mine/personalcenter.stml',
+							fixedOn:'page4',
+							reload: true,
+							pageParam: {
+								"names": ret.data.name,
+								"identitys": ret.data.identity,
+								"bindTelephones": ret.data.bindTelephone
+							},
+							rect: {
+								x: 0,             //左上角x坐标，数字类型
+								y: 0,             //左上角y坐标，数字类型
+								w: 'auto',             //宽度，若传'auto'，页面从x位置开始自动充满父页面宽度，数字或固定值'auto'
+								h: 510,             //高度，若传'auto'，页面从y位置开始自动充满父页面高度，数字或固定值'auto'
+
+
+							}
+						});
+					});
+				}
+				else{
+				api.alert({
+					msg : '输入错误，请输入 server / client '
+				})
+			}
+			}
+			
+			});
+		},
+	}
+}
+</script>
+<style>
+.hoc-menu-list {
+	border-radius: 4px;
+	background-color: white;
+	margin-bottom: 10px;
+	padding: 0 10px;
+}
+.hoc-menu-list-item-choose {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid #340bec;
+	height: 60px;
+}
+.hoc-menu-list-item {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid #f8f8f8;
+	height: 49px;
+}
+.hoc-menu-list-item:active {
+	opacity: 0.7;
+}
+.hoc-menu-list-item-title-choose {
+	font-size: 20px;
+	color: #333;
+}
+.hoc-menu-list-item-title {
+	font-size: 14px;
+	color: #333;
+}
+.hoc-menu-list-item-gor {
+	width: 10px;
+	height: 10px;
+}
+.nav-bar-back-icon {
+	width: 18px;
+	height: 18px;
+}
+.whit {
+	height: 540px;
+	background-color: white;
+}
+</style>

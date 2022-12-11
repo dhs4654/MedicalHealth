@@ -1,0 +1,140 @@
+<template>
+	<view class="hoc-verify-form-lr">
+		<view class="form">
+			<view class="f-input-box input-phone">
+				<text>手机号</text>
+				<input class="f-input" id="telephone" style="padding-left:37px" type="string" keyboard-type="string" maxlength="11"
+					:placeholder="data.placeholderPhone" :value="data.valuePhone"></input>
+				<view class="areacode">
+					<text>+86</text>
+				</view>
+			</view>
+			<view class="f-input-box password-input">
+				<text>密码</text>
+				<input class="f-input" id="passw" type="password" :value="data.valuePassword"
+					:placeholder="data.placeholderPassword"></input>
+				<view class="icon-password">
+					<image class="icon-password-img"
+						src="http://ae8b3ee28597856d3283.qiniucdn.apicloud-system.com/apicloud/b24539ea8eb94f54318f38e4cf9c7d5d.png" />
+				</view>
+			</view>
+			<view class="btn-login" @click="backtolog2">
+				<text class="btn-login-text">{data.btnText}</text>
+			</view>
+		</view>
+	</view>
+</template>
+<script>
+export default {
+	name: 'hoc-verify-form-lr',
+	props: {
+		data: {
+			type: Object,
+			default: function () {
+				return {}
+			}
+		}
+	},
+	apiready() {//like created
+
+	},
+	data() {
+		return {
+			data: this.props.data || {
+				placeholderPhone: "请输入手机号",
+				valuePhone: "",
+				placeholderPassword: "至少6位数字+字母",
+				valuePassword: "",
+				btnText:"申请注册"
+			}
+		}
+	},
+	methods: {
+		backtolog2( ){
+            
+			var phonenumber = document.getElementById("telephone").value;
+			var key = document.getElementById("passw").value;
+			api.ajax({
+				url: 'http://124.222.44.207:5000/userLibrary/users',
+				method: 'post',
+				headers:{
+					'Content-Type': 'application/json;charset=utf-8'
+				},
+				dataType:'json',
+				data:{
+					body:{
+						name: "user12138",
+						identity: "client",
+						active: true,
+						telephone: phonenumber,
+						bindTelephone: "00000000000",
+						password : key,
+						isApplied : false,
+						isReceived : false,
+						ack : false
+					}
+				},
+			},function(ret, err){
+				if(ret){
+					api.alert({
+						msg:JSON.stringify(ret)
+					});
+					
+				}else{
+					api.alert({msg:JSON.stringify(err)});
+				}
+			}
+			);
+			api.alert({
+				msg:"register success"},
+				function(ret){
+				api.closeFrame();
+			});
+		 }
+
+	}
+}
+</script>
+<style>
+.form {
+	margin-top: 50px;
+	font-size: 14px;
+}
+.f-input {
+	margin-bottom: 20px;
+	width: 100%;
+	height: 40px;
+	box-sizing: border-box;
+	border: none;
+	border-bottom: 1px solid #efefef;
+}
+.areacode {
+	position: absolute;
+	bottom: 30px;
+	left: 0;
+}
+.icon-password {
+	position: absolute;
+	right: 0;
+	bottom: 30px;
+	width: 20px;
+	height: 20px;
+}
+.icon-password-img {
+	width: 100%;
+}
+.btn-login {
+	margin-top: 20px;
+	width: 100%;
+	height: 46px;
+	border-radius: 4px;
+	background: #17b998;
+	justify-content: center;
+	align-items: center;
+	color: #fff;
+}
+.btn-login-text {
+	font-size: 15px;
+	color: #fff;
+}
+</style>
